@@ -36,14 +36,55 @@ const STATES = { WAITING: 'waiting', READY: 'ready', GO: 'go', RESULT: 'result',
 const OtherGames = ({ onBack }) => (
   <div className="other-games">
     <div className="other-games-label">Try more games</div>
+
     <div className="other-games-row">
-      <button className="other-game-btn" onClick={onBack}>
-        <span className="other-game-name">Memory Match</span>
-        <span className="other-game-sub">Working Memory</span>
+      <button className="other-game-card" onClick={onBack}>
+        <div
+          className="other-game-card-icon"
+          style={{
+            background: '#7c3aed15',
+            border: '1px solid #7c3aed30'
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+          </svg>
+        </div>
+
+        <div className="other-game-card-info">
+          <div className="other-game-card-name">Memory Match</div>
+          <div className="other-game-card-skill" style={{ color: '#7c3aed' }}>
+            Working Memory
+          </div>
+        </div>
+
+        <div className="other-game-card-arrow">→</div>
       </button>
-      <button className="other-game-btn" onClick={onBack}>
-        <span className="other-game-name">Stroop Test</span>
-        <span className="other-game-sub">Attention Control</span>
+
+      <button className="other-game-card" onClick={onBack}>
+        <div
+          className="other-game-card-icon"
+          style={{
+            background: '#f59e0b15',
+            border: '1px solid #f59e0b30'
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+
+        <div className="other-game-card-info">
+          <div className="other-game-card-name">Stroop Test</div>
+          <div className="other-game-card-skill" style={{ color: '#f59e0b' }}>
+            Attention Control
+          </div>
+        </div>
+
+        <div className="other-game-card-arrow">→</div>
       </button>
     </div>
   </div>
