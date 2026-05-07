@@ -69,7 +69,7 @@ function Home() {
           </SignedOut>
           {/* Signed-in state: show "Open App" shortcut and the Clerk user avatar */}
           <SignedIn>
-            <button className="nav-cta-btn" onClick={handleGoToApp}>Open App</button>
+            <button className="nav-cta-btn" onClick={handleGoToApp}>Go to Dashboard</button>
             <UserButton />
           </SignedIn>
         </div>

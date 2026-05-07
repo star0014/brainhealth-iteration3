@@ -14,6 +14,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useEffect } from 'react'
 import { useAuth, SignUpButton } from '@clerk/clerk-react'
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, Cell, ResponsiveContainer } from 'recharts'
 import './Progress.css'
 import MilestoneBanner from '../components/MilestoneBanner'
 
@@ -58,6 +59,83 @@ const MILESTONES = [
   { days: 3,  label: '3-Day Starter',   desc: 'You showed up 3 days in a row!',          color: '#3b82f6' },
   { days: 7,  label: '7-Day Streak',    desc: 'A full week of healthy habits!',           color: '#2563eb' },
   { days: 30, label: '30-Day Legend',   desc: 'A whole month — you are unstoppable!',     color: '#1d4ed8' },
+]
+
+// ── Game achievements ────────────────────────────────────────────────────────
+// Each achievement has an id, emoji, Gen Z label, desc, rarity tier, and a
+// condition function that receives the full gameScores array and returns boolean.
+// Rarity: 'common' | 'rare' | 'legendary'
+const GAME_ACHIEVEMENTS = [
+  {
+    id: 'reaction_first', emoji: '⚡', rarity: 'common',
+    label: 'first tap',
+    desc: 'Played your first Reaction Test',
+    hint: 'Play the Reaction Test once',
+    condition: s => s.some(g => g.game_id === 'reaction'),
+  },
+  {
+    id: 'understood', emoji: '🎯', rarity: 'rare',
+    label: 'understood the assignment',
+    desc: 'Got under 300ms on the Reaction Test',
+    hint: 'React in under 300ms',
+    condition: s => s.some(g => g.game_id === 'reaction' && g.score < 300),
+  },
+  {
+    id: 'built_different', emoji: '⚡', rarity: 'legendary',
+    label: 'built different',
+    desc: "Sub 250ms reaction time — ngl you're just wired differently",
+    hint: 'React in under 250ms',
+    condition: s => s.some(g => g.game_id === 'reaction' && g.score < 250),
+  },
+  {
+    id: 'memory_first', emoji: '🃏', rarity: 'common',
+    label: 'first flip',
+    desc: 'Played your first Memory Match',
+    hint: 'Play the Memory Match once',
+    condition: s => s.some(g => g.game_id === 'memory'),
+  },
+  {
+    id: 'big_brain', emoji: '🧠', rarity: 'rare',
+    label: 'big brain behavior',
+    desc: 'Finished Memory Match in 20 moves or less',
+    hint: 'Complete Memory Match in ≤20 moves',
+    condition: s => s.some(g => g.game_id === 'memory' && g.score <= 20),
+  },
+  {
+    id: 'no_crumbs', emoji: '✨', rarity: 'legendary',
+    label: 'ate and left no crumbs',
+    desc: 'Crushed Memory Match in 16 moves or less — fr no cap',
+    hint: 'Complete Memory Match in ≤16 moves',
+    condition: s => s.some(g => g.game_id === 'memory' && g.score <= 16),
+  },
+  {
+    id: 'stroop_first', emoji: '🌈', rarity: 'common',
+    label: 'colour coded',
+    desc: 'Played your first Stroop Test',
+    hint: 'Play the Stroop Test once',
+    condition: s => s.some(g => g.game_id === 'stroop'),
+  },
+  {
+    id: 'no_cap', emoji: '💯', rarity: 'rare',
+    label: 'no cap',
+    desc: '80%+ accuracy on Stroop — your focus is locked in fr',
+    hint: 'Score 80%+ accuracy on Stroop',
+    condition: s => s.some(g => g.game_id === 'stroop' && g.score >= 80),
+  },
+  {
+    id: 'holy_trinity', emoji: '🙏', rarity: 'rare',
+    label: 'the holy trinity',
+    desc: 'Played all 3 games — respect',
+    hint: 'Play all 3 games at least once',
+    condition: s => ['reaction', 'memory', 'stroop'].every(id => s.some(g => g.game_id === id)),
+  },
+  {
+    id: 'main_character', emoji: '🔥', rarity: 'legendary',
+    label: 'main character energy',
+    desc: 'Played 5+ games total — the dedication is real',
+    hint: 'Play any game 5 times total',
+    condition: s => s.length >= 5,
+  },
 ]
 
 // ── Rating helpers ──────────────────────────────────────────────────────────
@@ -150,9 +228,20 @@ function Progress() {
   }
 
   // Derived values for the milestone progress bar.
-  const unlockedMilestones = MILESTONES.filter(m => total >= m.days)
-  const nextMilestone      = MILESTONES.find(m => total < m.days)
-  const progressToNext     = nextMilestone ? (total / nextMilestone.days) * 100 : 100  // 100% if all milestones are unlocked
+  const unlockedMilestones    = MILESTONES.filter(m => total >= m.days)
+  const nextMilestone         = MILESTONES.find(m => total < m.days)
+  const progressToNext        = nextMilestone ? (total / nextMilestone.days) * 100 : 100  // 100% if all milestones are unlocked
+  const unlockedAchievements  = GAME_ACHIEVEMENTS.filter(a => a.condition(gameScores))
+
+  // Per-game chart data: take the last 8 plays, reverse to chronological order for the x-axis.
+  const reactionData = gameScores.filter(g => g.game_id === 'reaction').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, ms: g.score }))
+  const memoryData   = gameScores.filter(g => g.game_id === 'memory').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, moves: g.score }))
+  const stroopData   = gameScores.filter(g => g.game_id === 'stroop').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, acc: g.score }))
+
+  // Personal bests per game (reaction/memory: lower = better; stroop: higher = better).
+  const pbReaction = reactionData.length > 0 ? Math.min(...reactionData.map(d => d.ms))    : null
+  const pbMemory   = memoryData.length   > 0 ? Math.min(...memoryData.map(d => d.moves))   : null
+  const pbStroop   = stroopData.length   > 0 ? Math.max(...stroopData.map(d => d.acc))     : null
 
   // Show a spinner while data is loading.
   if (loading) return (
@@ -306,51 +395,136 @@ function Progress() {
         </div>
       </div>
 
-      {/* ── Game history ─────────────────────────────────────────────────────── */}
-      {/* Only rendered when the user has at least one saved game score */}
-      {gameScores.length > 0 && (
-        <div className="games-section">
-          <h2>Game History</h2>
-          <div className="games-list">
-            {/* Show the 10 most recent scores */}
-            {gameScores.slice(0, 10).map(g => {
-              const isReaction = g.game_id === 'reaction'
-              // Select the appropriate rating function based on which game was played
-              const rating = isReaction ? getRatingReaction(g.score) : getRatingMemory(g.score)
-              return (
-                <div key={g.id} className="game-score-card">
-                  {/* Game icon: lightning bolt for Reaction, monitor for Memory */}
-                  <div className="game-score-icon" style={{ background: isReaction ? '#eff6ff' : '#f5f3ff' }}>
-                    {isReaction ? (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                      </svg>
-                    ) : (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="3" width="20" height="14" rx="2"/>
-                        <path d="M8 21h8M12 17v4"/>
-                      </svg>
-                    )}
-                  </div>
-                  <div className="game-score-info">
-                    <div className="game-score-name">{isReaction ? 'Reaction Test' : 'Memory Match'}</div>
-                    <div className="game-score-date">
-                      {/* Format: "Mon, 5 Jan, 09:30 AM" */}
-                      {new Date(g.played_at).toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </div>
-                  <div className="game-score-result">
-                    {/* Score display: append 'ms' for reaction times, 'moves' for memory */}
-                    <div className="game-score-num">{g.score}{isReaction ? 'ms' : ' moves'}</div>
-                    {/* Rating label coloured by performance tier */}
-                    <div className="game-score-rating" style={{ color: rating.color }}>{rating.label}</div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+      {/* ── Game achievements ────────────────────────────────────────────────── */}
+      <div className="achievements-section">
+        <div className="achievements-header">
+          <h2>game achievements</h2>
+          <span className="achievements-count">{unlockedAchievements.length}/{GAME_ACHIEVEMENTS.length} unlocked</span>
         </div>
-      )}
+        <div className="achievements-grid">
+          {GAME_ACHIEVEMENTS.map(a => {
+            const unlocked = a.condition(gameScores)
+            return (
+              <div key={a.id} className={`achievement-card rarity-${a.rarity} ${unlocked ? 'unlocked' : 'locked'}`}>
+                <div className="achievement-emoji">{unlocked ? a.emoji : '🔒'}</div>
+                <div className="achievement-body">
+                  <div className="achievement-label">{a.label}</div>
+                  <div className="achievement-desc">{unlocked ? a.desc : a.hint}</div>
+                </div>
+                <div className={`achievement-rarity-badge rarity-${a.rarity}`}>
+                  {a.rarity}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── Game performance charts ──────────────────────────────────────────── */}
+      <div className="game-charts-section">
+        <h2>Game Performance</h2>
+        <div className="game-charts-grid">
+
+          {/* ── Reaction Test ── */}
+          <div className="game-chart-card reaction">
+            <div className="game-chart-header">
+              <div>
+                <div className="game-chart-title">⚡ Reaction Test</div>
+                <div className="game-chart-skill">Processing Speed · lower = better</div>
+              </div>
+              {pbReaction !== null && (
+                <div className="game-chart-pb reaction">
+                  <div className="game-chart-pb-num">{pbReaction}ms</div>
+                  <div className="game-chart-pb-label">personal best</div>
+                </div>
+              )}
+            </div>
+            {reactionData.length === 0 ? (
+              <div className="game-chart-empty">No plays yet — give it a try!</div>
+            ) : (
+              <ResponsiveContainer width="100%" height={150}>
+                <LineChart data={reactionData} margin={{ top: 8, right: 24, bottom: 0, left: -20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="n" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
+                  <Tooltip formatter={v => [`${v}ms`, 'Reaction time']} contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
+                  <ReferenceLine y={300} stroke="#cbd5e1" strokeDasharray="4 3" label={{ value: '300ms', position: 'insideTopRight', fontSize: 10, fill: '#94a3b8' }} />
+                  <Line type="monotone" dataKey="ms" stroke="#2563eb" strokeWidth={2.5} dot={{ fill: '#2563eb', r: 4, strokeWidth: 0 }} activeDot={{ r: 6 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          {/* ── Memory Match ── */}
+          <div className="game-chart-card memory">
+            <div className="game-chart-header">
+              <div>
+                <div className="game-chart-title">🧠 Memory Match</div>
+                <div className="game-chart-skill">Working Memory · fewer moves = better</div>
+              </div>
+              {pbMemory !== null && (
+                <div className="game-chart-pb memory">
+                  <div className="game-chart-pb-num">{pbMemory}</div>
+                  <div className="game-chart-pb-label">best moves</div>
+                </div>
+              )}
+            </div>
+            {memoryData.length === 0 ? (
+              <div className="game-chart-empty">No plays yet — give it a try!</div>
+            ) : (
+              <ResponsiveContainer width="100%" height={150}>
+                <BarChart data={memoryData} margin={{ top: 8, right: 24, bottom: 0, left: -20 }} barSize={22}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="n" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={v => [`${v} moves`, 'Moves']} contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
+                  <ReferenceLine y={20} stroke="#cbd5e1" strokeDasharray="4 3" label={{ value: 'target', position: 'insideTopRight', fontSize: 10, fill: '#94a3b8' }} />
+                  <Bar dataKey="moves" radius={[6, 6, 0, 0]}>
+                    {memoryData.map((entry, i) => (
+                      <Cell key={i} fill={entry.moves <= 16 ? '#16a34a' : entry.moves <= 20 ? '#7c3aed' : '#f59e0b'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          {/* ── Stroop Test ── */}
+          <div className="game-chart-card stroop">
+            <div className="game-chart-header">
+              <div>
+                <div className="game-chart-title">🌈 Stroop Test</div>
+                <div className="game-chart-skill">Attention Control · higher = better</div>
+              </div>
+              {pbStroop !== null && (
+                <div className="game-chart-pb stroop">
+                  <div className="game-chart-pb-num">{pbStroop}%</div>
+                  <div className="game-chart-pb-label">personal best</div>
+                </div>
+              )}
+            </div>
+            {stroopData.length === 0 ? (
+              <div className="game-chart-empty">No plays yet — give it a try!</div>
+            ) : (
+              <ResponsiveContainer width="100%" height={150}>
+                <BarChart data={stroopData} margin={{ top: 8, right: 24, bottom: 0, left: -20 }} barSize={22}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="n" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <Tooltip formatter={v => [`${v}%`, 'Accuracy']} contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
+                  <ReferenceLine y={80} stroke="#cbd5e1" strokeDasharray="4 3" label={{ value: '80%', position: 'insideTopRight', fontSize: 10, fill: '#94a3b8' }} />
+                  <Bar dataKey="acc" radius={[6, 6, 0, 0]}>
+                    {stroopData.map((entry, i) => (
+                      <Cell key={i} fill={entry.acc >= 80 ? '#16a34a' : entry.acc >= 60 ? '#f59e0b' : '#ef4444'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+        </div>
+      </div>
 
       {/* ── Recent activity log ──────────────────────────────────────────────── */}
       {/* Shows the 7 most recent habit check-ins as a timeline of daily dots and tags */}
@@ -362,9 +536,10 @@ function Progress() {
               <div key={h.id} className="recent-item">
                 {/* Dot colour: green if active that day, grey if rest day */}
                 <div className="recent-dot" style={{ background: h.physical_activity ? '#16a34a' : '#94a3b8' }} />
-                {/* T12:00:00 is appended to avoid off-by-one day errors from timezone offsets */}
+                {/* If date is already a full ISO timestamp (authenticated), use it directly.
+                    If it's a plain YYYY-MM-DD string (guest), append T12:00:00 to avoid timezone off-by-one. */}
                 <div className="recent-date">
-                  {new Date(h.date + 'T12:00:00').toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric' })}
+                  {new Date(h.date.includes('T') ? h.date : h.date + 'T12:00:00').toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric' })}
                 </div>
                 <div className="recent-tags">
                   <span className="recent-tag">{h.sleep_hours} hrs sleep</span>

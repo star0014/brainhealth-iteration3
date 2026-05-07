@@ -315,14 +315,12 @@ function Onboarding() {
 
             {/* Navigation footer: Back (hidden on first step) and Continue */}
             <div className="ob-footer">
-              {step > 0 ? (
+              {step > 0 && (
                 <button type="button" className="btn-back" onClick={prevStep}>Back</button>
-              ) : (
-                <div className="btn-spacer"></div>  // placeholder to keep Continue right-aligned
               )}
               <button
                 type="button"
-                className="btn-next"
+                className={`btn-next${step === 0 ? ' full' : ''}`}
                 style={{ background: `linear-gradient(135deg, ${currentStep.accent}, ${currentStep.accent}cc)` }}
                 onClick={nextStep}
               >

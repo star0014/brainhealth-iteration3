@@ -49,6 +49,64 @@
 
 .ht-history-list h3 { font-size: 17px; font-weight: 600; color: #0d1b2a; margin-bottom: 12px; }
 
+/* ── Field hint ── */
+.ht-field-hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* ── Guide banner ── */
+.ht-guide-banner {
+  position: relative;
+  background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 20px 44px 20px 20px;
+  margin-bottom: 16px;
+}
+.ht-guide-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #94a3b8;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+.ht-guide-close:hover { color: #475569; }
+.ht-guide-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 14px;
+}
+.ht-guide-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ht-guide-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #1e293b;
+}
+.ht-guide-icon { font-size: 20px; flex-shrink: 0; }
+.ht-guide-item strong { font-weight: 600; margin-right: 4px; }
+.ht-guide-item span { color: #475569; }
+.ht-guide-footer {
+  font-size: 13px;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
 /* ── Guest banner fix ── */
 .ht-guest-banner {
   display: flex;

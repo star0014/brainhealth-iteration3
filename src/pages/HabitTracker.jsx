@@ -93,8 +93,14 @@ function HabitTracker() {
   const [view,         setView]         = useState('checkin')  // 'checkin' | 'history'
   const [historyRange, setHistoryRange] = useState(7)      // 7 or 30 day history window
   const [successMsg,   setSuccessMsg]   = useState('')     // transient success feedback text
+  const [showGuide,    setShowGuide]    = useState(() => localStorage.getItem('bb_ht_guide_dismissed') !== 'true')
   // Form values: initialised empty, pre-populated if a today entry exists.
   const [form, setForm] = useState({ sleep_hours: '', screen_time: '', physical_activity: false })
+
+  const dismissGuide = () => {
+    localStorage.setItem('bb_ht_guide_dismissed', 'true')
+    setShowGuide(false)
+  }
 
   // today: ISO date string 'YYYY-MM-DD' in the local timezone, used to match DB/localStorage records.
   const today = new Date().toLocaleDateString('en-CA')
@@ -251,6 +257,39 @@ function HabitTracker() {
       {/* ── Check-in tab ──────────────────────────────────────────────────────── */}
       {view === 'checkin' && (
         <div className="ht-checkin">
+
+          {/* Guide banner — shown until the user dismisses it */}
+          {showGuide && (
+            <div className="ht-guide-banner">
+              <button className="ht-guide-close" onClick={dismissGuide} aria-label="Dismiss guide">×</button>
+              <div className="ht-guide-title">How your check-in updates your score</div>
+              <div className="ht-guide-items">
+                <div className="ht-guide-item">
+                  <span className="ht-guide-icon">💤</span>
+                  <div>
+                    <strong>Sleep</strong>
+                    <span>affects your Rest score on the Dashboard</span>
+                  </div>
+                </div>
+                <div className="ht-guide-item">
+                  <span className="ht-guide-icon">📱</span>
+                  <div>
+                    <strong>Screen time</strong>
+                    <span>affects your Focus score</span>
+                  </div>
+                </div>
+                <div className="ht-guide-item">
+                  <span className="ht-guide-icon">🏃</span>
+                  <div>
+                    <strong>Activity</strong>
+                    <span>affects your Energy score</span>
+                  </div>
+                </div>
+              </div>
+              <div className="ht-guide-footer">Check in daily to keep Brainy's score up to date.</div>
+            </div>
+          )}
+
           {/* Reminder notice if the user already has an entry for today */}
           {todayCheckin && (
             <div className="ht-already-done">You've already checked in today — update your entry below if needed.</div>
@@ -266,6 +305,7 @@ function HabitTracker() {
                   <button key={val} className={`ht-option ${form.sleep_hours === val ? 'selected' : ''}`} onClick={() => setForm({ ...form, sleep_hours: val })}>{val} hrs</button>
                 ))}
               </div>
+              <div className="ht-field-hint">🎯 7–8 hrs is the sweet spot for brain recovery</div>
             </div>
 
             {/* Screen time field — 5 option buttons (< 2h to 8h+) */}
@@ -277,6 +317,7 @@ function HabitTracker() {
                   <button key={val} className={`ht-option ${form.screen_time === val ? 'selected' : ''}`} onClick={() => setForm({ ...form, screen_time: val })}>{val}</button>
                 ))}
               </div>
+              <div className="ht-field-hint">🎯 Under 2h, especially in evenings, protects your sleep quality</div>
             </div>
 
             {/* Physical activity field — binary toggle (Yes / No) */}
@@ -287,6 +328,7 @@ function HabitTracker() {
                 <button className={`ht-toggle-btn ${form.physical_activity ? 'active' : ''}`}  onClick={() => setForm({ ...form, physical_activity: true })}>Yes, I was active</button>
                 <button className={`ht-toggle-btn ${!form.physical_activity ? 'active' : ''}`} onClick={() => setForm({ ...form, physical_activity: false })}>No activity today</button>
               </div>
+              <div className="ht-field-hint">🎯 Even a 20-min walk counts — consistency beats intensity</div>
             </div>
 
             {/* Transient success/update confirmation message */}
