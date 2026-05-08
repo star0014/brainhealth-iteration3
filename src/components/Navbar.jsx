@@ -67,7 +67,30 @@ function Navbar() {
 
       {/* Right side: Clerk UserButton — shows the user's avatar and a sign-out option.
           Renders nothing for guest users since they have no Clerk account. */}
-      <UserButton />
+      <div className="navbar-auth">
+
+        {isSignedIn ? (
+
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: {
+                  width: '42px',
+                  height: '42px'
+                }
+              }
+            }}
+          />
+
+        ) : (
+
+          <Link to="/project-login" className="navbar-login-btn">
+            Sign In
+          </Link>
+
+        )}
+
+      </div>
     </nav>
   )
 }

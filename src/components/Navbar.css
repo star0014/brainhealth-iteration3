@@ -210,3 +210,44 @@
     top: 10px;
   }
 }
+
+/* ───────────────────────────────────────── */
+/* AUTH BUTTON */
+/* ───────────────────────────────────────── */
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+
+  color: white;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition: all 0.2s ease;
+
+  box-shadow: 0 4px 14px rgba(37,99,235,0.22);
+}
+
+.navbar-login-btn:hover {
+  transform: translateY(-1px);
+
+  box-shadow: 0 8px 22px rgba(37,99,235,0.3);
+}
