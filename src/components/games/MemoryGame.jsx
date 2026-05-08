@@ -101,6 +101,7 @@ function MemoryGame({ onBack }) {
   const { getToken } = useAuth()
 
   const [cards,     setCards]     = useState(createCards())  // all 16 card objects
+  const [phase, setPhase] = useState('intro')
   const [selected,  setSelected]  = useState([])             // 0 or 1 cards currently flipped by the player
   const [moves,     setMoves]     = useState(0)              // total flip attempts (the score)
   const [done,      setDone]      = useState(false)          // true when all pairs are matched
@@ -221,8 +222,116 @@ function MemoryGame({ onBack }) {
         <div className="game-rounds">{formatTime(elapsed)}</div>
       </div>
 
-      {/* ── Playing state ────────────────────────────────────────────────────── */}
-      {!done ? (
+      {/* ── Intro Screen ───────────────────────────────────────────────────── */}
+      {phase === 'intro' ? (
+
+        <div className="stroop-intro-card">
+
+          <div className="stroop-intro-demo">
+
+            <div style={{ display: 'flex', gap: 14 }}>
+
+              <div
+                style={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: 16,
+                  background: '#7c3aed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 34,
+                  color: 'white',
+                  boxShadow: '0 8px 24px rgba(124,58,237,0.3)'
+                }}
+              >
+                🧠
+              </div>
+
+              <div
+                style={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: 16,
+                  background: '#7c3aed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 34,
+                  color: 'white',
+                  boxShadow: '0 8px 24px rgba(124,58,237,0.3)'
+                }}
+              >
+                🧠
+              </div>
+
+            </div>
+
+            <div className="stroop-demo-arrow">→</div>
+
+            <div className="stroop-demo-answer">
+              <span>Find</span>
+
+              <div
+                className="stroop-demo-chip"
+                style={{
+                  background: '#f3e8ff',
+                  color: '#7c3aed',
+                  border: '2px solid #7c3aed'
+                }}
+              >
+                Matching Pairs
+              </div>
+            </div>
+
+          </div>
+
+          <div className="stroop-intro-rules">
+
+            <div className="stroop-rule">
+              <span className="stroop-rule-icon">🧠</span>
+              <span>
+                Flip cards to reveal hidden symbols
+              </span>
+            </div>
+
+            <div className="stroop-rule">
+              <span className="stroop-rule-icon">🎯</span>
+              <span>
+                Find all the <strong>matching pairs</strong>
+              </span>
+            </div>
+
+            <div className="stroop-rule">
+              <span className="stroop-rule-icon">⚡</span>
+              <span>
+                Finish in as <strong>few moves</strong> as possible
+              </span>
+            </div>
+
+            <div className="stroop-rule">
+              <span className="stroop-rule-icon">⏱</span>
+              <span>
+                Your moves and completion time are tracked
+              </span>
+            </div>
+
+          </div>
+
+          <button
+            className="stroop-start-btn"
+            style={{
+              background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+              boxShadow: '0 8px 24px rgba(124,58,237,0.35)'
+            }}
+            onClick={() => setPhase('playing')}
+          >
+            Start Game →
+          </button>
+
+        </div>
+
+      ) : !done ? (
         <>
           {/* Move and match counters above the grid */}
           <div className="memory-stats">

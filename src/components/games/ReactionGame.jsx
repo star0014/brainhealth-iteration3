@@ -207,7 +207,6 @@ function ReactionGame({ onBack }) {
         <div className="game-rounds">{round} / {TOTAL_ROUNDS}</div>
       </div>
 
-      {/* ── Active game area ──────────────────────────────────────────────────── */}
       {/* The reaction-box CSS class is extended with the state name to drive background colour:
           .reaction-box.waiting → grey, .reaction-box.go → green, etc. */}
       {/* ── Intro Screen ───────────────────────────────────────────────────── */}
