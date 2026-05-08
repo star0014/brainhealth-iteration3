@@ -94,6 +94,7 @@ function ReactionGame({ onBack }) {
   const { getToken } = useAuth()
 
   const [state,        setState]        = useState(STATES.WAITING)  // current phase of the state machine
+  const [phase,        setPhase]        = useState('intro')
   const [reactionTime, setReactionTime] = useState(null)            // most recent round's reaction time (ms)
   const [results,      setResults]      = useState([])              // array of reaction times for all rounds
   const [round,        setRound]        = useState(0)               // how many rounds have been completed
@@ -209,7 +210,88 @@ function ReactionGame({ onBack }) {
       {/* ── Active game area ──────────────────────────────────────────────────── */}
       {/* The reaction-box CSS class is extended with the state name to drive background colour:
           .reaction-box.waiting → grey, .reaction-box.go → green, etc. */}
-      {!done ? (
+      {/* ── Intro Screen ───────────────────────────────────────────────────── */}
+      {phase === 'intro' ? (
+
+        <div className="stroop-intro-card">
+
+          <div className="stroop-intro-demo">
+
+            <div
+              className="stroop-demo-word"
+              style={{
+                color: '#2563eb',
+                fontSize: 54
+              }}
+            >
+              TAP!
+            </div>
+
+            <div className="stroop-demo-arrow">→</div>
+
+            <div className="stroop-demo-answer">
+              <span>React</span>
+
+              <div
+                className="stroop-demo-chip"
+                style={{
+                  background: '#eff6ff',
+                  color: '#2563eb',
+                  border: '2px solid #2563eb'
+                }}
+              >
+                Fast
+              </div>
+            </div>
+
+          </div>
+
+          <div className="stroop-intro-rules">
+
+            <div className="stroop-rule">
+              <span className="stroop-rule-icon">👀</span>
+              <span>
+                Wait for the screen to turn <strong>green</strong>
+              </span>
+            </div>
+
+            <div className="stroop-rule">
+              <span className="stroop-rule-icon">⚡</span>
+              <span>
+                Tap as <strong>quickly</strong> as possible
+              </span>
+            </div>
+
+            <div className="stroop-rule">
+              <span className="stroop-rule-icon">🚫</span>
+              <span>
+                Don’t tap too early or it counts as a false start
+              </span>
+            </div>
+
+            <div className="stroop-rule">
+              <span className="stroop-rule-icon">📊</span>
+              <span>
+                Complete <strong>5 rounds</strong> and get your average reaction time
+              </span>
+            </div>
+
+          </div>
+
+          <button
+            className="stroop-start-btn"
+            style={{
+              background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+              boxShadow: '0 8px 24px rgba(37,99,235,0.35)'
+            }}
+            onClick={() => setPhase('playing')}
+          >
+            Start Game →
+          </button>
+
+        </div>
+
+      ) : !done ? (
         <div className={`reaction-box ${state}`} onClick={handleClick}>
           {/* WAITING: invite the player to start */}
           {state === STATES.WAITING && (
