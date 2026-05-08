@@ -3,8 +3,8 @@
   top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100% - 48px);
-  max-width: 1400px;
+  width: calc(100% - 24px);
+  max-width: none;
   height: 74px;
 
   background: rgba(255, 255, 255, 0.82);
