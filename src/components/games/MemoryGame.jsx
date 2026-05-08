@@ -105,17 +105,21 @@ function MemoryGame({ onBack }) {
   const [selected,  setSelected]  = useState([])             // 0 or 1 cards currently flipped by the player
   const [moves,     setMoves]     = useState(0)              // total flip attempts (the score)
   const [done,      setDone]      = useState(false)          // true when all pairs are matched
-  const [startTime] = useState(Date.now())                   // timestamp at game start (not reactive)
+  const [startTime, setStartTime] = useState(null)
   const [elapsed,   setElapsed]   = useState(0)              // seconds since start (for the timer display)
   const [locked,    setLocked]    = useState(false)          // blocks clicks while a non-match is animating
   const [saved,     setSaved]     = useState(false)          // true after score is successfully submitted
 
   // Increment elapsed every second until the game is done.
   useEffect(() => {
-    if (done) return
-    const interval = setInterval(() => setElapsed(Math.floor((Date.now() - startTime) / 1000)), 1000)
-    return () => clearInterval(interval)  // clear on unmount or when done changes
-  }, [done])
+    if (done || phase !== 'playing') return
+
+    const interval = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startTime) / 1000))
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [done, phase])
 
   // When all cards are matched, set done=true and save the score.
   useEffect(() => {
@@ -324,7 +328,10 @@ function MemoryGame({ onBack }) {
               background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
               boxShadow: '0 8px 24px rgba(124,58,237,0.35)'
             }}
-            onClick={() => setPhase('playing')}
+            onClick={() => {
+              setStartTime(Date.now())
+              setPhase('playing')
+            }}
           >
             Start Game →
           </button>
