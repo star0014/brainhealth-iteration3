@@ -11,7 +11,11 @@
 //     simply invisible for guests (Clerk renders nothing if no user is signed in).
 // ─────────────────────────────────────────────────────────────────────────────
 import { Link, useLocation } from 'react-router-dom'
-import { UserButton, useUser } from '@clerk/clerk-react'
+import {
+  UserButton,
+  useUser,
+  SignInButton
+} from '@clerk/clerk-react'
 import './Navbar.css'
 import { getSnapshot, hasCompletedOnboarding } from '../utils/recommendations'
 
@@ -84,9 +88,11 @@ function Navbar() {
 
         ) : (
 
-          <Link to="/project-login" className="navbar-login-btn">
-            Sign In
-          </Link>
+          <SignInButton mode="modal">
+            <button className="navbar-login-btn">
+              Sign In
+            </button>
+          </SignInButton>
 
         )}
 
