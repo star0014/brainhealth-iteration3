@@ -93,7 +93,7 @@
   align-items: center;
   justify-content: center;
   gap: 60px;
-  padding: 60px 80px 40px;
+  padding: 110px 80px 40px;
 }
 
 .hero-left  { flex: 1; max-width: 560px; }
