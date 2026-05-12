@@ -7,10 +7,9 @@
   max-width: none;
   height: 74px;
 
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(239, 246, 255, 0.92);
   backdrop-filter: blur(18px);
 
-  border: 1px solid rgba(191, 219, 254, 0.6);
   border-bottom: 1px solid rgba(191, 219, 254, 0.9);
 
   border-radius: 0 0 24px 24px;
