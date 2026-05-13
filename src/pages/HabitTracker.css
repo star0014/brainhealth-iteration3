@@ -137,3 +137,26 @@
   flex-shrink: 0;
 }
 .ht-guest-cta:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+/* ── Hero section ── */
+.ht-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+  border-radius: 20px;
+  padding: 32px 40px;
+  border: 1px solid #dbeafe;
+  margin-bottom: 28px;
+}
+.ht-hero-text h1 { font-size: 32px; font-weight: 700; color: #0d1b2a; margin-bottom: 8px; letter-spacing: -0.5px; }
+.ht-hero-text p { font-size: 17px; color: #374151; line-height: 1.6; }
+.ht-hero-visual { flex-shrink: 0; }
+
+.hero-illustration {
+  width: 160px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+}
