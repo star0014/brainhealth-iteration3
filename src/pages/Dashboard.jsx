@@ -834,7 +834,7 @@ function Dashboard() {
             )}
           </div>
 
-          {/* Dismissed items toggle — allows the user to review and restore what they dismissed */}
+          {/* Dismissed items toggle — click a dismissed bar to restore the full toast card */}
           {dismissedWarnings.length > 0 && (
             <div className="dismissed-section">
               <button className="dismissed-toggle" onClick={() => setShowHistory(!showHistory)}>
@@ -843,22 +843,22 @@ function Dashboard() {
               {showHistory && (
                 <div className="dismissed-list">
                   {dismissedWarnings.includes('priority') && (
-                    <div className="dismissed-item">
-                      <span>{priority.label} — main priority</span>
-                      <button
-                        className="dismissed-restore"
-                        onClick={() => setDismissedWarnings(prev => prev.filter(k => k !== 'priority'))}
-                      >Restore</button>
-                    </div>
+                    <button
+                      className={`dismissed-bar toast-${statusTone(priority.score)}`}
+                      onClick={() => setDismissedWarnings(prev => prev.filter(k => k !== 'priority'))}
+                    >
+                      <span className="dismissed-bar-label">{priority.label}</span>
+                      <span className="dismissed-bar-score">{priority.score}/100</span>
+                    </button>
                   )}
                   {dismissedWarnings.includes('secondary') && (
-                    <div className="dismissed-item">
-                      <span>{secondaryPriority.label} — next to watch</span>
-                      <button
-                        className="dismissed-restore"
-                        onClick={() => setDismissedWarnings(prev => prev.filter(k => k !== 'secondary'))}
-                      >Restore</button>
-                    </div>
+                    <button
+                      className={`dismissed-bar toast-${statusTone(secondaryPriority.score)}`}
+                      onClick={() => setDismissedWarnings(prev => prev.filter(k => k !== 'secondary'))}
+                    >
+                      <span className="dismissed-bar-label">{secondaryPriority.label}</span>
+                      <span className="dismissed-bar-score">{secondaryPriority.score}/100</span>
+                    </button>
                   )}
                 </div>
               )}
