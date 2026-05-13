@@ -436,18 +436,12 @@ function Progress() {
           <h1>Your Progress</h1>
           <p>Every check-in brings you closer to a healthier brain.</p>
         </div>
-        {/* Decorative SVG with an animated pulsing circle and streak counter */}
         <div className="progress-hero-visual">
-          <svg viewBox="0 0 180 140" xmlns="http://www.w3.org/2000/svg" width="180" height="140">
-            <circle cx="90" cy="70" r="55" fill="#eff6ff" stroke="#bfdbfe" strokeWidth="1.5"/>
-            <path d="M65,50 L90,30 L115,50 L125,80 L105,105 L75,105 L55,80 Z" fill="#dbeafe" stroke="#3b82f6" strokeWidth="1.5"/>
-            <path d="M75,65 L85,75 L105,55" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-            <circle cx="90" cy="30" r="4" fill="#2563eb">
-              <animate attributeName="r" values="4;5;4" dur="2s" repeatCount="indefinite"/>
-            </circle>
-            {/* Streak count rendered as SVG text so it updates reactively */}
-            <text x="90" y="125" textAnchor="middle" fontSize="11" fill="#2563eb" fontWeight="700">{streak} day streak</text>
-          </svg>
+          <img
+            src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=300&q=80"
+            alt="Progress"
+            className="hero-illustration"
+          />
         </div>
       </div>
 

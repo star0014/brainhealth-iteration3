@@ -64,7 +64,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  margin-bottom: 16px;
 }
 
 .game-chart-card {
@@ -257,3 +256,12 @@
   flex-shrink: 0;
 }
 .ht-guest-cta:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+/* ── Hero illustration image ── */
+.hero-illustration {
+  width: 160px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+}

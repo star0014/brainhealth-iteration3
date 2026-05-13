@@ -236,15 +236,11 @@ function HabitTracker() {
           <p>Small daily habits lead to big changes in brain health.</p>
         </div>
         <div className="ht-hero-visual">
-          {/* Decorative brain illustration with pulsing dots */}
-          <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" width="200" height="160">
-            <circle cx="100" cy="80" r="60" fill="#eff6ff" stroke="#bfdbfe" strokeWidth="1.5"/>
-            <path d="M70,80 C70,65 80,55 95,55 C100,45 110,42 118,48 C126,42 136,45 138,55 C148,58 152,68 148,78 C152,85 150,95 142,98 C140,108 130,112 122,108 C116,114 106,114 100,108 C94,114 84,112 80,106 C72,104 68,94 72,86 C68,83 68,80 70,80Z" fill="#dbeafe" stroke="#3b82f6" strokeWidth="1.5"/>
-            <line x1="100" y1="55" x2="100" y2="108" stroke="#93c5fd" strokeWidth="1" strokeDasharray="3,2"/>
-            <circle cx="100" cy="65" r="3" fill="#2563eb"><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/></circle>
-            <circle cx="85" cy="85" r="2.5" fill="#3b82f6"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite"/></circle>
-            <circle cx="115" cy="85" r="2.5" fill="#3b82f6"><animate attributeName="opacity" values="1;0.4;1" dur="1.8s" repeatCount="indefinite"/></circle>
-          </svg>
+          <img
+            src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300&q=80"
+            alt="Habit Tracker"
+            className="hero-illustration"
+          />
         </div>
       </div>
 
