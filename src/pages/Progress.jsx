@@ -123,18 +123,67 @@ const GAME_ACHIEVEMENTS = [
     condition: s => s.some(g => g.game_id === 'stroop' && g.score >= 80),
   },
   {
+    id: 'pattern_first', emoji: '🔲', rarity: 'common',
+    label: 'pattern recognition',
+    desc: 'Played your first Visual Pattern game',
+    hint: 'Play Visual Pattern once',
+    condition: s => s.some(g => g.game_id === 'visual_pattern'),
+  },
+  {
+    id: 'pattern_pro', emoji: '🧩', rarity: 'rare',
+    label: 'galaxy brain',
+    desc: 'Reached level 6 in Visual Pattern — your memory is built different',
+    hint: 'Reach level 6 in Visual Pattern',
+    condition: s => s.some(g => g.game_id === 'visual_pattern' && g.score >= 6),
+  },
+  {
+    id: 'pattern_legend', emoji: '🌀', rarity: 'legendary',
+    label: 'limitless',
+    desc: 'Reached level 9 in Visual Pattern — genuinely insane recall',
+    hint: 'Reach level 9 in Visual Pattern',
+    condition: s => s.some(g => g.game_id === 'visual_pattern' && g.score >= 9),
+  },
+  {
+    id: 'math_first', emoji: '🔢', rarity: 'common',
+    label: 'do the math',
+    desc: 'Played your first Mental Math game',
+    hint: 'Play Mental Math once',
+    condition: s => s.some(g => g.game_id === 'mental_math'),
+  },
+  {
+    id: 'math_sharp', emoji: '⚡', rarity: 'rare',
+    label: 'big number szn',
+    desc: 'Scored 18+ correct in Mental Math — your brain is on another level',
+    hint: 'Score 18+ correct in Mental Math',
+    condition: s => s.some(g => g.game_id === 'mental_math' && g.score >= 18),
+  },
+  {
+    id: 'math_legend', emoji: '🧮', rarity: 'legendary',
+    label: 'human calculator',
+    desc: '25+ correct in 60 seconds — are you even human rn',
+    hint: 'Score 25+ correct in Mental Math',
+    condition: s => s.some(g => g.game_id === 'mental_math' && g.score >= 25),
+  },
+  {
     id: 'holy_trinity', emoji: '🙏', rarity: 'rare',
     label: 'the holy trinity',
-    desc: 'Played all 3 games — respect',
-    hint: 'Play all 3 games at least once',
+    desc: 'Played all 3 original games — respect',
+    hint: 'Play Reaction, Memory and Stroop at least once',
     condition: s => ['reaction', 'memory', 'stroop'].every(id => s.some(g => g.game_id === id)),
+  },
+  {
+    id: 'all_five', emoji: '🎮', rarity: 'legendary',
+    label: 'full send',
+    desc: 'Played all 5 games — you are built for this',
+    hint: 'Play all 5 games at least once',
+    condition: s => ['reaction', 'memory', 'stroop', 'visual_pattern', 'mental_math'].every(id => s.some(g => g.game_id === id)),
   },
   {
     id: 'main_character', emoji: '🔥', rarity: 'legendary',
     label: 'main character energy',
-    desc: 'Played 5+ games total — the dedication is real',
-    hint: 'Play any game 5 times total',
-    condition: s => s.length >= 5,
+    desc: 'Played 10+ games total — the dedication is real',
+    hint: 'Play any game 10 times total',
+    condition: s => s.length >= 10,
   },
 ]
 
@@ -233,15 +282,18 @@ function Progress() {
   const progressToNext        = nextMilestone ? (total / nextMilestone.days) * 100 : 100  // 100% if all milestones are unlocked
   const unlockedAchievements  = GAME_ACHIEVEMENTS.filter(a => a.condition(gameScores))
 
-  // Per-game chart data: take the last 8 plays, reverse to chronological order for the x-axis.
-  const reactionData = gameScores.filter(g => g.game_id === 'reaction').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, ms: g.score }))
-  const memoryData   = gameScores.filter(g => g.game_id === 'memory').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, moves: g.score }))
-  const stroopData   = gameScores.filter(g => g.game_id === 'stroop').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, acc: g.score }))
+  const reactionData    = gameScores.filter(g => g.game_id === 'reaction').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, ms: g.score }))
+  const memoryData      = gameScores.filter(g => g.game_id === 'memory').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, moves: g.score }))
+  const stroopData      = gameScores.filter(g => g.game_id === 'stroop').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, acc: g.score }))
+  const patternData     = gameScores.filter(g => g.game_id === 'visual_pattern').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, level: g.score }))
+  const mathData        = gameScores.filter(g => g.game_id === 'mental_math').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, score: g.score }))
 
-  // Personal bests per game (reaction/memory: lower = better; stroop: higher = better).
-  const pbReaction = reactionData.length > 0 ? Math.min(...reactionData.map(d => d.ms))    : null
-  const pbMemory   = memoryData.length   > 0 ? Math.min(...memoryData.map(d => d.moves))   : null
-  const pbStroop   = stroopData.length   > 0 ? Math.max(...stroopData.map(d => d.acc))     : null
+  // Personal bests per game (reaction/memory: lower = better; stroop/pattern/math: higher = better).
+  const pbReaction = reactionData.length > 0 ? Math.min(...reactionData.map(d => d.ms))      : null
+  const pbMemory   = memoryData.length   > 0 ? Math.min(...memoryData.map(d => d.moves))     : null
+  const pbStroop   = stroopData.length   > 0 ? Math.max(...stroopData.map(d => d.acc))       : null
+  const pbPattern  = patternData.length  > 0 ? Math.max(...patternData.map(d => d.level))    : null
+  const pbMath     = mathData.length     > 0 ? Math.max(...mathData.map(d => d.score))       : null
 
   // Show a spinner while data is loading.
   if (loading) return (
@@ -516,6 +568,74 @@ function Progress() {
                   <Bar dataKey="acc" radius={[6, 6, 0, 0]}>
                     {stroopData.map((entry, i) => (
                       <Cell key={i} fill={entry.acc >= 80 ? '#16a34a' : entry.acc >= 60 ? '#f59e0b' : '#ef4444'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          {/* ── Visual Pattern ── */}
+          <div className="game-chart-card" style={{ borderTopColor: '#0891b2' }}>
+            <div className="game-chart-header">
+              <div>
+                <div className="game-chart-title">🔲 Visual Pattern</div>
+                <div className="game-chart-skill">Working Memory · higher level = better</div>
+              </div>
+              {pbPattern !== null && (
+                <div className="game-chart-pb" style={{ background: '#e0f9ff', borderColor: '#0891b240' }}>
+                  <div className="game-chart-pb-num" style={{ color: '#0891b2' }}>Lvl {pbPattern}</div>
+                  <div className="game-chart-pb-label">personal best</div>
+                </div>
+              )}
+            </div>
+            {patternData.length === 0 ? (
+              <div className="game-chart-empty">No plays yet — give it a try!</div>
+            ) : (
+              <ResponsiveContainer width="100%" height={150}>
+                <BarChart data={patternData} margin={{ top: 8, right: 24, bottom: 0, left: -20 }} barSize={22}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="n" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={v => [`Level ${v}`, 'Level reached']} contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
+                  <ReferenceLine y={6} stroke="#cbd5e1" strokeDasharray="4 3" label={{ value: 'target', position: 'insideTopRight', fontSize: 10, fill: '#94a3b8' }} />
+                  <Bar dataKey="level" radius={[6, 6, 0, 0]}>
+                    {patternData.map((entry, i) => (
+                      <Cell key={i} fill={entry.level >= 9 ? '#16a34a' : entry.level >= 6 ? '#0891b2' : '#f59e0b'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          {/* ── Mental Math ── */}
+          <div className="game-chart-card" style={{ borderTopColor: '#16a34a' }}>
+            <div className="game-chart-header">
+              <div>
+                <div className="game-chart-title">🔢 Mental Math</div>
+                <div className="game-chart-skill">Executive Function · higher score = better</div>
+              </div>
+              {pbMath !== null && (
+                <div className="game-chart-pb" style={{ background: '#f0fdf4', borderColor: '#bbf7d0' }}>
+                  <div className="game-chart-pb-num" style={{ color: '#16a34a' }}>{pbMath}</div>
+                  <div className="game-chart-pb-label">personal best</div>
+                </div>
+              )}
+            </div>
+            {mathData.length === 0 ? (
+              <div className="game-chart-empty">No plays yet — give it a try!</div>
+            ) : (
+              <ResponsiveContainer width="100%" height={150}>
+                <BarChart data={mathData} margin={{ top: 8, right: 24, bottom: 0, left: -20 }} barSize={22}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="n" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={v => [`${v} correct`, 'Score']} contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
+                  <ReferenceLine y={18} stroke="#cbd5e1" strokeDasharray="4 3" label={{ value: 'target', position: 'insideTopRight', fontSize: 10, fill: '#94a3b8' }} />
+                  <Bar dataKey="score" radius={[6, 6, 0, 0]}>
+                    {mathData.map((entry, i) => (
+                      <Cell key={i} fill={entry.score >= 25 ? '#16a34a' : entry.score >= 18 ? '#2563eb' : '#f59e0b'} />
                     ))}
                   </Bar>
                 </BarChart>
