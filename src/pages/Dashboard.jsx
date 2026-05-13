@@ -788,39 +788,27 @@ function Dashboard() {
       </div>
 
 
-      {/* Quick navigation row */}
-      <div className="dash-quick-nav">
-        <Link to="/habits" className="dash-quick-card">
-          <div className="dash-quick-icon" style={{ background: '#eff6ff' }}>📋</div>
-          <div className="dash-quick-text">
-            <div className="dash-quick-label">Habit Tracker</div>
-            <div className="dash-quick-sub">Log today's check-in</div>
+      {/* Habit Tracker + Progress nudges */}
+      <div className="dash-nudge-row">
+        <Link to="/habits" className="dash-games-nudge">
+          <div className="dash-games-nudge-left">
+            <span className="dash-games-nudge-emoji">📋</span>
+            <div>
+              <div className="dash-games-nudge-title">Log today's habits</div>
+              <div className="dash-games-nudge-sub">Track your sleep, screen time and activity to keep Brainy healthy</div>
+            </div>
           </div>
-          <span className="dash-quick-arrow">→</span>
+          <span className="dash-games-nudge-btn">Check in →</span>
         </Link>
-        <Link to="/games" className="dash-quick-card">
-          <div className="dash-quick-icon" style={{ background: '#f0fdf4' }}>🎮</div>
-          <div className="dash-quick-text">
-            <div className="dash-quick-label">Mini Games</div>
-            <div className="dash-quick-sub">Train your brain</div>
+        <Link to="/progress" className="dash-games-nudge">
+          <div className="dash-games-nudge-left">
+            <span className="dash-games-nudge-emoji">📈</span>
+            <div>
+              <div className="dash-games-nudge-title">See your progress</div>
+              <div className="dash-games-nudge-sub">Streaks, milestones and game achievements all in one place</div>
+            </div>
           </div>
-          <span className="dash-quick-arrow">→</span>
-        </Link>
-        <Link to="/progress" className="dash-quick-card">
-          <div className="dash-quick-icon" style={{ background: '#fffbeb' }}>📈</div>
-          <div className="dash-quick-text">
-            <div className="dash-quick-label">My Progress</div>
-            <div className="dash-quick-sub">Streaks &amp; milestones</div>
-          </div>
-          <span className="dash-quick-arrow">→</span>
-        </Link>
-        <Link to="/articles" className="dash-quick-card">
-          <div className="dash-quick-icon" style={{ background: '#fdf4ff' }}>📚</div>
-          <div className="dash-quick-text">
-            <div className="dash-quick-label">Article Hub</div>
-            <div className="dash-quick-sub">Reads for your brain</div>
-          </div>
-          <span className="dash-quick-arrow">→</span>
+          <span className="dash-games-nudge-btn">View →</span>
         </Link>
       </div>
 
