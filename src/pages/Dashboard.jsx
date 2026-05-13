@@ -787,7 +787,44 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* ── Biggest shifts + What stands out (side by side) ────────────────── */}
+
+      {/* ── Quick navigation row ────────────────────────────────────────────── */}
+      <div className="dash-quick-nav">
+        <Link to="/habits" className="dash-quick-card">
+          <div className="dash-quick-icon" style={{ background: '#eff6ff' }}>📋</div>
+          <div className="dash-quick-text">
+            <div className="dash-quick-label">Habit Tracker</div>
+            <div className="dash-quick-sub">Log today's check-in</div>
+          </div>
+          <span className="dash-quick-arrow">→</span>
+        </Link>
+        <Link to="/games" className="dash-quick-card">
+          <div className="dash-quick-icon" style={{ background: '#f0fdf4' }}>🎮</div>
+          <div className="dash-quick-text">
+            <div className="dash-quick-label">Mini Games</div>
+            <div className="dash-quick-sub">Train your brain</div>
+          </div>
+          <span className="dash-quick-arrow">→</span>
+        </Link>
+        <Link to="/progress" className="dash-quick-card">
+          <div className="dash-quick-icon" style={{ background: '#fffbeb' }}>📈</div>
+          <div className="dash-quick-text">
+            <div className="dash-quick-label">My Progress</div>
+            <div className="dash-quick-sub">Streaks & milestones</div>
+          </div>
+          <span className="dash-quick-arrow">→</span>
+        </Link>
+        <Link to="/articles" className="dash-quick-card">
+          <div className="dash-quick-icon" style={{ background: '#fdf4ff' }}>📚</div>
+          <div className="dash-quick-text">
+            <div className="dash-quick-label">Article Hub</div>
+            <div className="dash-quick-sub">Reads for your brain</div>
+          </div>
+          <span className="dash-quick-arrow">→</span>
+        </Link>
+      </div>
+
+      {/* ── Biggest shifts + What stands out (side by side) ────────────────── */
       <div className="shifts-standout-row">
 
         {/* Left column: priority toast cards (dismissable) */}
@@ -834,7 +871,7 @@ function Dashboard() {
             )}
           </div>
 
-          {/* Dismissed items toggle — click a dismissed bar to restore the full toast card */}
+          {/* Dismissed items toggle — allows the user to review what they dismissed */}
           {dismissedWarnings.length > 0 && (
             <div className="dismissed-section">
               <button className="dismissed-toggle" onClick={() => setShowHistory(!showHistory)}>
@@ -843,22 +880,10 @@ function Dashboard() {
               {showHistory && (
                 <div className="dismissed-list">
                   {dismissedWarnings.includes('priority') && (
-                    <button
-                      className={`dismissed-bar toast-${statusTone(priority.score)}`}
-                      onClick={() => setDismissedWarnings(prev => prev.filter(k => k !== 'priority'))}
-                    >
-                      <span className="dismissed-bar-label">{priority.label}</span>
-                      <span className="dismissed-bar-score">{priority.score}/100</span>
-                    </button>
+                    <div className="dismissed-item">{priority.label} — main priority</div>
                   )}
                   {dismissedWarnings.includes('secondary') && (
-                    <button
-                      className={`dismissed-bar toast-${statusTone(secondaryPriority.score)}`}
-                      onClick={() => setDismissedWarnings(prev => prev.filter(k => k !== 'secondary'))}
-                    >
-                      <span className="dismissed-bar-label">{secondaryPriority.label}</span>
-                      <span className="dismissed-bar-score">{secondaryPriority.score}/100</span>
-                    </button>
+                    <div className="dismissed-item">{secondaryPriority.label} — next to watch</div>
                   )}
                 </div>
               )}
@@ -995,6 +1020,19 @@ function Dashboard() {
         ))}
       </div>
 
+
+      {/* ── Games nudge ─────────────────────────────────────────────────────── */}
+      <Link to="/games" className="dash-games-nudge">
+        <div className="dash-games-nudge-left">
+          <span className="dash-games-nudge-emoji">🎮</span>
+          <div>
+            <div className="dash-games-nudge-title">Take the edge off — play a mini game</div>
+            <div className="dash-games-nudge-sub">Quick brain exercises to sharpen your focus and reaction speed</div>
+          </div>
+        </div>
+        <span className="dash-games-nudge-btn">Play now →</span>
+      </Link>
+
       {/* ── Charts ──────────────────────────────────────────────────────────── */}
       {/* Population benchmark charts let the user see where they sit among 18-24 year olds */}
       <div className="section-heading">Sleep decoded</div>
@@ -1002,6 +1040,27 @@ function Dashboard() {
 
       <div className="section-heading">Movement decoded</div>
       <PhysicalActivityChart userActivityBand={selectedActivityBand} />
+
+      {/* ── Footer navigation CTAs ──────────────────────────────────────────── */}
+      <div className="dash-footer-nav">
+        <Link to="/articles" className="dash-footer-card">
+          <span className="dash-footer-emoji">📚</span>
+          <div>
+            <div className="dash-footer-title">Explore the Article Hub</div>
+            <div className="dash-footer-sub">Smart reads picked for your lowest-scoring areas</div>
+          </div>
+          <span className="dash-footer-arrow">→</span>
+        </Link>
+        <Link to="/progress" className="dash-footer-card">
+          <span className="dash-footer-emoji">🏆</span>
+          <div>
+            <div className="dash-footer-title">See your full progress</div>
+            <div className="dash-footer-sub">Streaks, milestones and game achievements</div>
+          </div>
+          <span className="dash-footer-arrow">→</span>
+        </Link>
+      </div>
+
     </div>
   )
 }
