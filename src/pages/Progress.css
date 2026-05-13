@@ -1,4 +1,4 @@
-.progress-page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; font-family: 'Inter', sans-serif; }
+.progress-page { max-width: 1100px; margin: 0 auto; padding: 96px 24px 80px; font-family: 'Inter', sans-serif; }
 
 .progress-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px; gap: 16px; color: #374151; }
 .progress-spinner { width: 36px; height: 36px; border: 3px solid #e2e8f0; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -256,12 +256,3 @@
   flex-shrink: 0;
 }
 .ht-guest-cta:hover { background: #1d4ed8; transform: translateY(-1px); }
-
-/* ── Hero illustration image ── */
-.hero-illustration {
-  width: 160px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
-}
