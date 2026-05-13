@@ -834,7 +834,7 @@ function Dashboard() {
             )}
           </div>
 
-          {/* Dismissed items toggle — allows the user to review what they dismissed */}
+          {/* Dismissed items toggle — allows the user to review and restore what they dismissed */}
           {dismissedWarnings.length > 0 && (
             <div className="dismissed-section">
               <button className="dismissed-toggle" onClick={() => setShowHistory(!showHistory)}>
@@ -843,10 +843,22 @@ function Dashboard() {
               {showHistory && (
                 <div className="dismissed-list">
                   {dismissedWarnings.includes('priority') && (
-                    <div className="dismissed-item">{priority.label} — main priority</div>
+                    <div className="dismissed-item">
+                      <span>{priority.label} — main priority</span>
+                      <button
+                        className="dismissed-restore"
+                        onClick={() => setDismissedWarnings(prev => prev.filter(k => k !== 'priority'))}
+                      >Restore</button>
+                    </div>
                   )}
                   {dismissedWarnings.includes('secondary') && (
-                    <div className="dismissed-item">{secondaryPriority.label} — next to watch</div>
+                    <div className="dismissed-item">
+                      <span>{secondaryPriority.label} — next to watch</span>
+                      <button
+                        className="dismissed-restore"
+                        onClick={() => setDismissedWarnings(prev => prev.filter(k => k !== 'secondary'))}
+                      >Restore</button>
+                    </div>
                   )}
                 </div>
               )}
