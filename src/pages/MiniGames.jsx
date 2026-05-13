@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useUser } from '@clerk/clerk-react'
+import { useUser, useAuth } from '@clerk/clerk-react'
 import ReactionGame from '../components/games/ReactionGame'
 import MemoryGame from '../components/games/MemoryGame'
 import StroopGame from '../components/games/StroopGame'
@@ -152,6 +152,7 @@ function MiniGames() {
   const [activeTab, setActiveTab] = useState('games') // 'games' | 'leaderboard' | 'achievements'
   const [gameScores, setGameScores] = useState([])
   const { user } = useUser()
+  const { getToken } = useAuth()
 
   useEffect(() => {
     if (user?.firstName) {
@@ -164,22 +165,19 @@ function MiniGames() {
     }
   }, [user])
 
-  // Fetch game scores for achievements tab
+  // Fetch game scores so achievements can evaluate conditions
   useEffect(() => {
     async function load() {
       try {
-        const guestId = localStorage.getItem('bb_guest_id')
-        const headers = guestId
-          ? { 'X-Guest-ID': guestId }
-          : {}
-        // For signed-in users we need a token — skip for now, achievements work with local data
-        const res = await fetch(`${API}/games`, { headers })
+        const token = await getToken()
+        if (!token) return // guest users don't save scores to API — achievements stay locked
+        const res = await fetch(`${API}/games`, { headers: { Authorization: `Bearer ${token}` } })
         const data = await res.json()
         if (Array.isArray(data)) setGameScores(data)
-      } catch { /* guest or unauthenticated — leave empty */ }
+      } catch { /* silently fail */ }
     }
     load()
-  }, [])
+  }, [user])
 
   if (activeGame === 'reaction')       return <ReactionGame onBack={() => setActiveGame(null)} />
   if (activeGame === 'memory')         return <MemoryGame onBack={() => setActiveGame(null)} />
