@@ -26,6 +26,7 @@
 import { useState, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
+import { getOrCreateDisplayName } from '../../utils/displayName'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -128,6 +129,7 @@ function ReactionGame({ onBack }) {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           game_id: 'reaction',
+          display_name: getOrCreateDisplayName(),
           score: avgMs,           // primary metric stored in the score column
           metadata: { rounds: allResults }  // per-round breakdown stored in metadata
         })

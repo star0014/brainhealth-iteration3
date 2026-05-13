@@ -17,6 +17,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
+import { getOrCreateDisplayName } from '../../utils/displayName'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -152,6 +153,7 @@ function StroopGame({ onBack, onSwitchGame }) {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           game_id: 'stroop',
+          display_name: getOrCreateDisplayName(),
           score,  // correct answers count (raw); accuracy % is in metadata
           metadata: {
             total_rounds: total,

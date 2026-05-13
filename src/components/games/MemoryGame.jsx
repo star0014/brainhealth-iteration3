@@ -18,6 +18,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
+import { getOrCreateDisplayName } from '../../utils/displayName'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -143,6 +144,7 @@ function MemoryGame({ onBack }) {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           game_id: 'memory',
+          display_name: getOrCreateDisplayName(),
           score: finalMoves,
           metadata: { time_seconds: finalTime }
         })

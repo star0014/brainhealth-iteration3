@@ -7,6 +7,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import './Game.css'
+import { getOrCreateDisplayName } from '../../utils/displayName'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -137,7 +138,7 @@ function MentalMathGame({ onBack }) {
       await fetch(`${API}/games`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ game_id: 'mental_math', score, metadata: { total, accuracy, best_streak: bestStreak } })
+        body: JSON.stringify({ game_id: 'mental_math', display_name: getOrCreateDisplayName(), score, metadata: { total, accuracy, best_streak: bestStreak } })
       })
       setSaved(true)
     } catch (err) { console.error(err) }
