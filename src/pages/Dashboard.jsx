@@ -978,6 +978,18 @@ function Dashboard() {
 
       </div>
 
+      {/* Games nudge — between Biggest Shifts and Brain Boosts */}
+      <Link to="/games" className="dash-games-nudge">
+        <div className="dash-games-nudge-left">
+          <span className="dash-games-nudge-emoji">🎮</span>
+          <div>
+            <div className="dash-games-nudge-title">Take the edge off — play a mini game</div>
+            <div className="dash-games-nudge-sub">Quick brain exercises to sharpen your focus and reaction speed</div>
+          </div>
+        </div>
+        <span className="dash-games-nudge-btn">Play now →</span>
+      </Link>
+
       {/* 30-second insights */}
       <div className="section-heading insight-heading">Brain boosts to try now</div>
       <div className="insights-subhead">Picked from your lowest scores.</div>
@@ -1022,15 +1034,15 @@ function Dashboard() {
 
 
       {/* Games nudge */}
-      <Link to="/games" className="dash-games-nudge">
+      <Link to="/articles" className="dash-games-nudge">
         <div className="dash-games-nudge-left">
-          <span className="dash-games-nudge-emoji">🎮</span>
+          <span className="dash-games-nudge-emoji">📚</span>
           <div>
-            <div className="dash-games-nudge-title">Take the edge off — play a mini game</div>
-            <div className="dash-games-nudge-sub">Quick brain exercises to sharpen your focus and reaction speed</div>
+            <div className="dash-games-nudge-title">Explore the Article Hub</div>
+            <div className="dash-games-nudge-sub">Smart reads picked for your lowest-scoring areas — go deeper on what matters</div>
           </div>
         </div>
-        <span className="dash-games-nudge-btn">Play now →</span>
+        <span className="dash-games-nudge-btn">Read now →</span>
       </Link>
 
       {/* Charts */}
@@ -1041,25 +1053,6 @@ function Dashboard() {
       <div className="section-heading">Movement decoded</div>
       <PhysicalActivityChart userActivityBand={selectedActivityBand} />
 
-      {/* Footer navigation CTAs */}
-      <div className="dash-footer-nav">
-        <Link to="/articles" className="dash-footer-card">
-          <span className="dash-footer-emoji">📚</span>
-          <div>
-            <div className="dash-footer-title">Explore the Article Hub</div>
-            <div className="dash-footer-sub">Smart reads picked for your lowest-scoring areas</div>
-          </div>
-          <span className="dash-footer-arrow">→</span>
-        </Link>
-        <Link to="/progress" className="dash-footer-card">
-          <span className="dash-footer-emoji">🏆</span>
-          <div>
-            <div className="dash-footer-title">See your full progress</div>
-            <div className="dash-footer-sub">Streaks, milestones and game achievements</div>
-          </div>
-          <span className="dash-footer-arrow">→</span>
-        </Link>
-      </div>
 
     </div>
   )
