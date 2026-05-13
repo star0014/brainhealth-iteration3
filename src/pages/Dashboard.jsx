@@ -688,7 +688,7 @@ function Dashboard() {
       {/* Animated particle canvas rendered behind all content */}
       <NeuralBackground />
 
-      {/* ── Check-in prompt modal ──────────────────────────────────────────── */}
+      {/* Check-in prompt modal */}
       {/* Shown after the checkin fetch completes when no today entry exists.
           Clicking the overlay backdrop closes the modal (use last score). */}
       {showCheckinPrompt && checkinLoaded && (
@@ -712,7 +712,7 @@ function Dashboard() {
         </div>
       )}
 
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      {/* Header */}
       <div className="dash-header">
         <div>
           <div className="dash-greeting">Your latest check-in</div>
@@ -721,7 +721,7 @@ function Dashboard() {
         <div className="dash-date">{today}</div>
       </div>
 
-      {/* ── Pet + Vitals section (side by side) ─────────────────────────────── */}
+      {/* Pet + Vitals section (side by side) */}
       <div className="pet-section">
         {/* Left column: pet SVG and poke button */}
         <div className="pet-left">
@@ -788,7 +788,7 @@ function Dashboard() {
       </div>
 
 
-      {/* ── Quick navigation row ────────────────────────────────────────────── */}
+      {/* Quick navigation row */}
       <div className="dash-quick-nav">
         <Link to="/habits" className="dash-quick-card">
           <div className="dash-quick-icon" style={{ background: '#eff6ff' }}>📋</div>
@@ -824,7 +824,7 @@ function Dashboard() {
         </Link>
       </div>
 
-      {/* ── Biggest shifts + What stands out (side by side) ────────────────── */
+      {/* Biggest shifts + What stands out */}
       <div className="shifts-standout-row">
 
         {/* Left column: priority toast cards (dismissable) */}
@@ -978,7 +978,7 @@ function Dashboard() {
 
       </div>
 
-      {/* ── 30-second insights ──────────────────────────────────────────────── */}
+      {/* 30-second insights */}
       <div className="section-heading insight-heading">Brain boosts to try now</div>
       <div className="insights-subhead">Picked from your lowest scores.</div>
       <div className="insights-grid">
@@ -1021,7 +1021,7 @@ function Dashboard() {
       </div>
 
 
-      {/* ── Games nudge ─────────────────────────────────────────────────────── */}
+      {/* Games nudge */}
       <Link to="/games" className="dash-games-nudge">
         <div className="dash-games-nudge-left">
           <span className="dash-games-nudge-emoji">🎮</span>
@@ -1033,7 +1033,7 @@ function Dashboard() {
         <span className="dash-games-nudge-btn">Play now →</span>
       </Link>
 
-      {/* ── Charts ──────────────────────────────────────────────────────────── */}
+      {/* Charts */}
       {/* Population benchmark charts let the user see where they sit among 18-24 year olds */}
       <div className="section-heading">Sleep decoded</div>
       <SleepDurationChart userSleepBand={selectedSleepBand} />
@@ -1041,7 +1041,7 @@ function Dashboard() {
       <div className="section-heading">Movement decoded</div>
       <PhysicalActivityChart userActivityBand={selectedActivityBand} />
 
-      {/* ── Footer navigation CTAs ──────────────────────────────────────────── */}
+      {/* Footer navigation CTAs */}
       <div className="dash-footer-nav">
         <Link to="/articles" className="dash-footer-card">
           <span className="dash-footer-emoji">📚</span>
