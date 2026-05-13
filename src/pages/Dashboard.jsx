@@ -810,7 +810,7 @@ function Dashboard() {
           <div className="dash-quick-icon" style={{ background: '#fffbeb' }}>📈</div>
           <div className="dash-quick-text">
             <div className="dash-quick-label">My Progress</div>
-            <div className="dash-quick-sub">Streaks & milestones</div>
+            <div className="dash-quick-sub">Streaks &amp; milestones</div>
           </div>
           <span className="dash-quick-arrow">→</span>
         </Link>
