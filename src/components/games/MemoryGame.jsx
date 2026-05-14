@@ -16,9 +16,9 @@
 //            or one of the "Try more games" shortcuts.
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useEffect } from 'react'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth, useUser } from '@clerk/clerk-react'
 import './Game.css'
-import { getOrCreateDisplayName } from '../../utils/displayName'
+import { getDisplayName } from '../../utils/displayName'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -100,6 +100,7 @@ function createCards() {
 
 function MemoryGame({ onBack }) {
   const { getToken } = useAuth()
+  const { user } = useUser()
 
   const [cards,     setCards]     = useState(createCards())  // all 16 card objects
   const [phase, setPhase] = useState('intro')
@@ -144,7 +145,7 @@ function MemoryGame({ onBack }) {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           game_id: 'memory',
-          display_name: getOrCreateDisplayName(),
+          display_name: getDisplayName(user?.id, user?.firstName),
           score: finalMoves,
           metadata: { time_seconds: finalTime }
         })

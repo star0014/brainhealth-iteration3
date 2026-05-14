@@ -24,9 +24,9 @@
 //   onBack — callback to return to the MiniGames hub
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useRef } from 'react'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth, useUser } from '@clerk/clerk-react'
 import './Game.css'
-import { getOrCreateDisplayName } from '../../utils/displayName'
+import { getDisplayName } from '../../utils/displayName'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -93,6 +93,7 @@ const OtherGames = ({ onBack }) => (
 
 function ReactionGame({ onBack }) {
   const { getToken } = useAuth()
+  const { user } = useUser()
 
   const [state,        setState]        = useState(STATES.WAITING)  // current phase of the state machine
   const [phase,        setPhase]        = useState('intro')
@@ -129,7 +130,7 @@ function ReactionGame({ onBack }) {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           game_id: 'reaction',
-          display_name: getOrCreateDisplayName(),
+          display_name: getDisplayName(user?.id, user?.firstName),
           score: avgMs,           // primary metric stored in the score column
           metadata: { rounds: allResults }  // per-round breakdown stored in metadata
         })

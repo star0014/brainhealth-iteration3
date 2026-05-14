@@ -5,7 +5,7 @@ import MemoryGame from '../components/games/MemoryGame'
 import StroopGame from '../components/games/StroopGame'
 import VisualPatternGame from '../components/games/VisualPatternGame'
 import MentalMathGame from '../components/games/MentalMathGame'
-import { getOrCreateDisplayName } from '../utils/displayName'
+import { getDisplayName, getOrCreateDisplayName } from '../utils/displayName'
 import { GAME_ACHIEVEMENTS } from '../data/gameAchievements'
 import './MiniGames.css'
 
@@ -65,7 +65,7 @@ function Leaderboard({ currentUserId }) {
   const [activeGame, setActiveGame] = useState('reaction')
   const [boards, setBoards] = useState({})
   const [loading, setLoading] = useState(false)
-  const myName = getOrCreateDisplayName()
+  const myName = getDisplayName(currentUserId, null)
 
   useEffect(() => {
     if (boards[activeGame]) return
@@ -112,7 +112,7 @@ function Leaderboard({ currentUserId }) {
           })}
         </div>
       )}
-      <div className="lb-footer">Your name on the leaderboard: <strong>{myName}</strong></div>
+      <div className="lb-footer">Your name on the leaderboard: <strong>{getOrCreateDisplayName()}</strong></div>
     </div>
   )
 }
@@ -154,20 +154,11 @@ function MiniGames() {
   const { user } = useUser()
   const { getToken } = useAuth()
 
+  // Ensure display name is initialised on mount for both guests and signed-in users.
+  // getDisplayName uses per-identity localStorage keys so the name never changes.
   useEffect(() => {
-    if (user?.firstName) {
-      const existing = localStorage.getItem('bb_display_name')
-      // Only set a new name if there isn't one already for this user
-      // (i.e. it was cleared on logout or never set)
-      if (!existing || existing === '' || !existing.startsWith(user.firstName)) {
-        const num = Math.floor(Math.random() * 9000) + 1000
-        localStorage.setItem('bb_display_name', `${user.firstName} #${num}`)
-      }
-    } else {
-      // Guest — generate or retrieve existing random name
-      getOrCreateDisplayName()
-    }
-  }, [user?.id])  // only re-run when user ID changes, not on every render
+    getDisplayName(user?.id, user?.firstName)
+  }, [user?.id])
 
   // Fetch game scores so achievements can evaluate conditions
   useEffect(() => {

@@ -66,12 +66,7 @@ function HandleAuthTransition() {
   const { getToken } = useAuth()
 
   useEffect(() => {
-    // On sign-out, clear display name so next user/guest gets a fresh one
-    if (!isSignedIn) {
-      const hadName = localStorage.getItem('bb_display_name')
-      if (hadName) localStorage.removeItem('bb_display_name')
-      return
-    }
+    if (!isSignedIn) return
     if (!user) return
 
     const userId = user.id
@@ -108,7 +103,6 @@ function HandleAuthTransition() {
           localStorage.removeItem(LS_HABITS)
           localStorage.removeItem('bb_total_checkins')
           localStorage.removeItem('bb_guest_id')
-          localStorage.removeItem('bb_display_name')  // regenerate as signed-in user name
         } catch (err) {
           console.error('Migration failed:', err)
           // Still clear guest flag even if migration fails
@@ -120,7 +114,6 @@ function HandleAuthTransition() {
       localStorage.removeItem('bb_is_guest')
       localStorage.removeItem('bb_total_checkins')
       localStorage.removeItem('bb_guest_id')
-      localStorage.removeItem('bb_display_name')  // clear so next user gets fresh leaderboard name
     }
   }, [isSignedIn, user?.id])
 

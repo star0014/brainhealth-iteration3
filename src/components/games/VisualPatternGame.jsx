@@ -5,9 +5,9 @@
 // Tests working memory and attention.
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth, useUser } from '@clerk/clerk-react'
 import './Game.css'
-import { getOrCreateDisplayName } from '../../utils/displayName'
+import { getDisplayName } from '../../utils/displayName'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 const GRID_SIZE = 9 // 3x3 grid
@@ -48,6 +48,7 @@ const OtherGames = ({ onBack }) => (
 
 function VisualPatternGame({ onBack }) {
   const { getToken } = useAuth()
+  const { user } = useUser()
   const [phase, setPhase] = useState('intro')   // intro | showing | input | correct | wrong | done
   const [sequence, setSequence] = useState([])  // the full sequence so far
   const [playerSeq, setPlayerSeq] = useState([]) // what the player has tapped
@@ -135,7 +136,7 @@ function VisualPatternGame({ onBack }) {
       await fetch(`${API}/games`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ game_id: 'visual_pattern', display_name: getOrCreateDisplayName(), score: finalLevel, metadata: { max_level: finalLevel } })
+        body: JSON.stringify({ game_id: 'visual_pattern', display_name: getDisplayName(user?.id, user?.firstName), score: finalLevel, metadata: { max_level: finalLevel } })
       })
       setSaved(true)
     } catch (err) { console.error(err) }
