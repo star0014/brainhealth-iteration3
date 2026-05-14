@@ -23,6 +23,7 @@ import HabitTracker from './pages/HabitTracker'
 import Progress from './pages/Progress'
 import MiniGames from './pages/MiniGames'
 import ProjectLogin from './pages/ProjectLogin'
+import Footer from './components/Footer'
 import { hasProjectAccess } from './utils/projectAuth'
 import { getSnapshot, hasCompletedOnboarding } from './utils/recommendations'
 
@@ -200,19 +201,19 @@ export default function App() {
         <Route path="/onboarding" element={<RequireProjectAccess><OnboardingRoute /></RequireProjectAccess>} />
 
         {/* /dashboard : main results screen — requires completed onboarding */}
-        <Route path="/dashboard" element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><RequireCompletedOnboarding><Dashboard /></RequireCompletedOnboarding></RequireAuth></RequireProjectAccess>} />
+        <Route path="/dashboard" element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><RequireCompletedOnboarding><Dashboard /></RequireCompletedOnboarding></RequireAuth><Footer /></RequireProjectAccess>} />
 
         {/* /habits : daily check-in and habit history */}
-        <Route path="/habits"    element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><HabitTracker /></RequireAuth></RequireProjectAccess>} />
+        <Route path="/habits"    element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><HabitTracker /><Footer /></RequireAuth></RequireProjectAccess>} />
 
         {/* /progress : streak, milestones, and game history */}
-        <Route path="/progress"  element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><Progress /></RequireAuth></RequireProjectAccess>} />
+        <Route path="/progress"  element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><Progress /><Footer /></RequireAuth></RequireProjectAccess>} />
 
         {/* /games : mini games hub — open to all (no RequireAuth) */}
-        <Route path="/games"     element={<RequireProjectAccess><Navbar /><GuestBanner /><MiniGames /></RequireProjectAccess>} />
+        <Route path="/games"     element={<RequireProjectAccess><Navbar /><GuestBanner /><MiniGames /><Footer /></RequireProjectAccess>} />
 
         {/* /articles : article hub — requires completed onboarding for personalised picks */}
-        <Route path="/articles"  element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><RequireCompletedOnboarding><ArticleHub /></RequireCompletedOnboarding></RequireAuth></RequireProjectAccess>} />
+        <Route path="/articles"  element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><RequireCompletedOnboarding><ArticleHub /></RequireCompletedOnboarding></RequireAuth><Footer /></RequireProjectAccess>} />
       </Routes>
     </BrowserRouter>
   )
