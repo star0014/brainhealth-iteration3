@@ -10,7 +10,6 @@
 //   - The Clerk UserButton is rendered at the far right for signed-in users; it is
 //     simply invisible for guests (Clerk renders nothing if no user is signed in).
 // ─────────────────────────────────────────────────────────────────────────────
-import { useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { UserButton, useUser } from '@clerk/clerk-react'
 import './Navbar.css'
@@ -26,18 +25,10 @@ function Navbar() {
   // Determine whether the "Onboarding" tab should be hidden.
   const isGuest = localStorage.getItem('bb_is_guest') === 'true'
   const guestDone = isGuest && canAccessProtectedPages
-  const { isSignedIn, user } = useUser()
+  const { isSignedIn } = useUser()
   const hideOnboarding = guestDone || isSignedIn
 
-  // Clear display name only when transitioning from signed-in to signed-out.
-  // Using a ref to track the previous value so we don't fire on initial guest load.
-  const prevSignedIn = useRef(undefined)
-  useEffect(() => {
-    if (prevSignedIn.current === true && isSignedIn === false) {
-      localStorage.removeItem('bb_display_name')
-    }
-    prevSignedIn.current = isSignedIn
-  }, [isSignedIn])
+
 
   return (
     <nav className="navbar">
