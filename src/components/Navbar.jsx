@@ -10,7 +10,7 @@
 //   - The Clerk UserButton is rendered at the far right for signed-in users; it is
 //     simply invisible for guests (Clerk renders nothing if no user is signed in).
 // ─────────────────────────────────────────────────────────────────────────────
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { UserButton, useUser } from '@clerk/clerk-react'
 import './Navbar.css'
@@ -29,12 +29,14 @@ function Navbar() {
   const { isSignedIn, user } = useUser()
   const hideOnboarding = guestDone || isSignedIn
 
-  // When user signs out (isSignedIn flips to false), clear the leaderboard
-  // display name so the next guest/user gets a fresh random name.
+  // Clear display name only when transitioning from signed-in to signed-out.
+  // Using a ref to track the previous value so we don't fire on initial guest load.
+  const prevSignedIn = useRef(undefined)
   useEffect(() => {
-    if (isSignedIn === false) {
+    if (prevSignedIn.current === true && isSignedIn === false) {
       localStorage.removeItem('bb_display_name')
     }
+    prevSignedIn.current = isSignedIn
   }, [isSignedIn])
 
   return (
