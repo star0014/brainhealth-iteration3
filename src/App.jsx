@@ -66,7 +66,13 @@ function HandleAuthTransition() {
   const { getToken } = useAuth()
 
   useEffect(() => {
-    if (!isSignedIn || !user) return
+    // On sign-out, clear display name so next user/guest gets a fresh one
+    if (!isSignedIn) {
+      const hadName = localStorage.getItem('bb_display_name')
+      if (hadName) localStorage.removeItem('bb_display_name')
+      return
+    }
+    if (!user) return
 
     const userId = user.id
     const alreadyMigrated = localStorage.getItem(LS_MIGRATED) === userId

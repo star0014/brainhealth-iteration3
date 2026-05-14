@@ -157,13 +157,17 @@ function MiniGames() {
   useEffect(() => {
     if (user?.firstName) {
       const existing = localStorage.getItem('bb_display_name')
-      if (!existing || !existing.includes(user.firstName)) {
-        localStorage.setItem('bb_display_name', `${user.firstName} #${Math.floor(Math.random() * 9000) + 1000}`)
+      // Only set a new name if there isn't one already for this user
+      // (i.e. it was cleared on logout or never set)
+      if (!existing || existing === '' || !existing.startsWith(user.firstName)) {
+        const num = Math.floor(Math.random() * 9000) + 1000
+        localStorage.setItem('bb_display_name', `${user.firstName} #${num}`)
       }
     } else {
+      // Guest — generate or retrieve existing random name
       getOrCreateDisplayName()
     }
-  }, [user])
+  }, [user?.id])  // only re-run when user ID changes, not on every render
 
   // Fetch game scores so achievements can evaluate conditions
   useEffect(() => {
