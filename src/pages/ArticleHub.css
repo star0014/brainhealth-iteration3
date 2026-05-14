@@ -21,6 +21,18 @@
     line-height: 1.6;
   }
 
+  .hub-data-note {
+    background: #f8fafc;
+    border: 1px solid rgba(74, 158, 219, 0.18);
+    border-left: 4px solid #4A9EDB;
+    border-radius: 14px;
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 13px 16px;
+    margin-bottom: 1.25rem;
+  }
+
   .recommendation-panel {
     background: linear-gradient(135deg, #F8FCFF, #EEF7FF);
     border: 1px solid rgba(74, 158, 219, 0.18);

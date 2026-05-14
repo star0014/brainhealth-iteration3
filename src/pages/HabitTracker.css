@@ -8,6 +8,7 @@
 .ht-tab.active { color: #2563eb; border-bottom-color: #2563eb; }
 .ht-already-done { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; padding: 12px 16px; border-radius: 10px; font-size: 16px; margin-bottom: 20px; }
 .ht-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.ht-data-note { background: #f8fafc; border: 1px solid #dbeafe; border-left: 4px solid #2563eb; border-radius: 12px; color: #334155; font-size: 14px; line-height: 1.6; padding: 13px 16px; margin-bottom: 24px; }
 .ht-field { margin-bottom: 32px; }
 .ht-field label { display: block; font-size: 18px; font-weight: 600; color: #0d1b2a; margin-bottom: 4px; }
 .ht-field-desc { font-size: 15px; color: #374151; margin-bottom: 14px; }

@@ -50,7 +50,7 @@ const SLEEP_BANDS = {
   2: { code: 2, label: '6 to less than 7 hours',   midpoint: 6.5, share: 18.0 },
   3: { code: 3, label: '7 to less than 8 hours',   midpoint: 7.5, share: 31.0 },
   4: { code: 4, label: '8 to less than 9 hours',   midpoint: 8.5, share: 35.8 },
-  5: { code: 5, label: '9 hours or more',           midpoint: 9.6, share: 5.6  },
+  5: { code: 5, label: '10+ hours',                 midpoint: 10.5, share: 0.5  },
 }
 
 // Maps Q2 answer codes (1-5) to an activity band object used by PhysicalActivityChart.

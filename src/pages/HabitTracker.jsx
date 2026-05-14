@@ -74,11 +74,11 @@ const RunIcon = () => (
 
 // ── Utility: sleep band → numeric hours ────────────────────────────────────
 // Converts the sleep_hours string stored in habits to a decimal number for charting.
-// '< 6' → 5.5, '9+' → 9, numeric strings ('6', '7', '8') → their float value.
+// '< 6' → 5.5, '10+' → 10.5, numeric strings ('6', '7', '8') → their float value.
 const sleepToNum = s => {
   if (!s) return null
   if (s === '< 6') return 5.5
-  if (s === '9+') return 9
+  if (s === '9+' || s === '10+') return 10.5
   return parseFloat(s)
 }
 
@@ -291,13 +291,16 @@ function HabitTracker() {
             <div className="ht-already-done">You've already checked in today — update your entry below if needed.</div>
           )}
           <div className="ht-card">
+            <div className="ht-data-note">
+              Your daily check-ins help BrainBoost identify patterns in sleep, screen time, movement, and progress. This information is used only to personalise your dashboard, insights, and streak history.
+            </div>
 
-            {/* Sleep hours field — 5 option buttons (< 6 to 9+) */}
+            {/* Sleep hours field — 5 option buttons (< 6 to 10+) */}
             <div className="ht-field">
               <label><MoonIcon /> Sleep Hours</label>
               <p className="ht-field-desc">How many hours did you sleep last night?</p>
               <div className="ht-options">
-                {['< 6', '6', '7', '8', '9+'].map(val => (
+                {['< 6', '6', '7', '8', '10+'].map(val => (
                   <button key={val} className={`ht-option ${form.sleep_hours === val ? 'selected' : ''}`} onClick={() => setForm({ ...form, sleep_hours: val })}>{val} hrs</button>
                 ))}
               </div>
