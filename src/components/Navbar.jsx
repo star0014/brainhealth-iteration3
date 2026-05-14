@@ -27,19 +27,15 @@ function Navbar() {
   const isGuest = localStorage.getItem('bb_is_guest') === 'true'
   const guestDone = isGuest && canAccessProtectedPages
   const { isSignedIn, user } = useUser()
-  const { addListener } = useClerk()
   const hideOnboarding = guestDone || isSignedIn
 
-  // Clear the leaderboard display name from localStorage when the user signs out
-  // so a new guest or different user gets a fresh random name.
+  // When user signs out (isSignedIn flips to false), clear the leaderboard
+  // display name so the next guest/user gets a fresh random name.
   useEffect(() => {
-    const unsub = addListener(({ session }) => {
-      if (!session) {
-        localStorage.removeItem('bb_display_name')
-      }
-    })
-    return () => unsub()
-  }, [addListener])
+    if (isSignedIn === false) {
+      localStorage.removeItem('bb_display_name')
+    }
+  }, [isSignedIn])
 
   return (
     <nav className="navbar">
