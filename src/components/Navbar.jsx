@@ -11,7 +11,7 @@
 //     simply invisible for guests (Clerk renders nothing if no user is signed in).
 // ─────────────────────────────────────────────────────────────────────────────
 import { Link, useLocation } from 'react-router-dom'
-import { UserButton, useUser } from '@clerk/clerk-react'
+import { UserButton, useUser, SignInButton } from '@clerk/clerk-react'
 import './Navbar.css'
 import { getSnapshot, hasCompletedOnboarding } from '../utils/recommendations'
 
