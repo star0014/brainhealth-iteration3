@@ -5,7 +5,7 @@ import MemoryGame from '../components/games/MemoryGame'
 import StroopGame from '../components/games/StroopGame'
 import VisualPatternGame from '../components/games/VisualPatternGame'
 import MentalMathGame from '../components/games/MentalMathGame'
-import { getDisplayName, getOrCreateDisplayName } from '../utils/displayName'
+import { getDisplayName } from '../utils/displayName'
 import { GAME_ACHIEVEMENTS } from '../data/gameAchievements'
 import './MiniGames.css'
 
@@ -61,11 +61,11 @@ const GAMES = [
 ]
 
 // ── Leaderboard panel ────────────────────────────────────────────────────────
-function Leaderboard({ currentUserId }) {
+function Leaderboard({ currentUserId, currentUserFirstName }) {
   const [activeGame, setActiveGame] = useState('reaction')
   const [boards, setBoards] = useState({})
   const [loading, setLoading] = useState(false)
-  const myName = getDisplayName(currentUserId, null)
+  const myName = getDisplayName(currentUserId, currentUserFirstName)
 
   useEffect(() => {
     if (boards[activeGame]) return
@@ -112,7 +112,7 @@ function Leaderboard({ currentUserId }) {
           })}
         </div>
       )}
-      <div className="lb-footer">Your name on the leaderboard: <strong>{getOrCreateDisplayName()}</strong></div>
+      <div className="lb-footer">Your name on the leaderboard: <strong>{myName}</strong></div>
     </div>
   )
 }
@@ -245,7 +245,7 @@ function MiniGames() {
         </div>
       )}
 
-      {activeTab === 'leaderboard' && <Leaderboard currentUserId={user?.id} />}
+      {activeTab === 'leaderboard' && <Leaderboard currentUserId={user?.id} currentUserFirstName={user?.firstName} />}
       {activeTab === 'achievements' && <Achievements gameScores={gameScores} />}
     </div>
   )
