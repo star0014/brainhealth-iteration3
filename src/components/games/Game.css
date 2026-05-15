@@ -1,4 +1,4 @@
-.game-page { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; font-family: 'Inter', sans-serif; }
+.game-page { max-width: 760px; margin: 0 auto; padding: 96px 24px 80px; font-family: 'Inter', sans-serif; }
 
 .game-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
 .game-back { background: none; border: 1.5px solid #e2e8f0; padding: 8px 16px; border-radius: 50px; font-size: 14px; font-weight: 500; color: #475569; cursor: pointer; transition: all 0.2s; }
