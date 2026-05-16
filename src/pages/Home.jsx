@@ -195,7 +195,7 @@ function Home() {
               color: '#0891b2',
               bg: '#e0f9ff',
               title: 'Daily Habit Tracker',
-              desc: 'Log your sleep, screen time, and activity each day. Charts show patterns over time so you can spot what's actually helping.',
+              desc: "Log your sleep, screen time, and activity each day. Charts show patterns over time so you can spot what's actually helping.",
               tag: 'Habit Tracker',
             },
             {
@@ -203,7 +203,7 @@ function Home() {
               color: '#16a34a',
               bg: '#f0fdf4',
               title: 'Cognitive Mini Games',
-              desc: 'Five science-backed games — Reaction Test, Memory Match, Stroop Test, Visual Pattern, and Mental Math — with a global leaderboard.',
+              desc: "Five science-backed games — Reaction Test, Memory Match, Stroop Test, Visual Pattern, and Mental Math — with a global leaderboard.",
               tag: 'Mini Games',
             },
             {
@@ -211,7 +211,7 @@ function Home() {
               color: '#b45309',
               bg: '#fef3c7',
               title: 'Personalised Article Hub',
-              desc: 'Reads recommended from your weakest domains. Sleep dragging? You'll see sleep articles first. Focus broken? Screen tips appear.',
+              desc: "Reads recommended from your weakest domains. Sleep dragging? You'll see sleep articles first. Focus broken? Screen tips appear.",
               tag: 'Article Hub',
             },
             {
