@@ -137,12 +137,16 @@ function MemoryGame({ onBack }) {
   async function saveScore() {
     try {
       const token = await getToken()
-      if (!token) return  // guest users — no token, skip saving
+      const guestId = !token ? localStorage.getItem('bb_guest_id') : null
+      if (!token && !guestId) return
+      const headers = token
+        ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+        : { 'X-Guest-ID': guestId, 'Content-Type': 'application/json' }
       const finalMoves = moves
       const finalTime  = Math.floor((Date.now() - startTime) / 1000)
       await fetch(`${API}/games`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           game_id: 'memory',
           display_name: getDisplayName(user?.id, user?.firstName),

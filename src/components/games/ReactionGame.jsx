@@ -124,15 +124,19 @@ function ReactionGame({ onBack }) {
   async function saveScore(avgMs, allResults) {
     try {
       const token = await getToken()
-      if (!token) return  // guest users — no Clerk token, skip saving
+      const guestId = !token ? localStorage.getItem('bb_guest_id') : null
+      if (!token && !guestId) return
+      const headers = token
+        ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+        : { 'X-Guest-ID': guestId, 'Content-Type': 'application/json' }
       await fetch(`${API}/games`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           game_id: 'reaction',
           display_name: getDisplayName(user?.id, user?.firstName),
-          score: avgMs,           // primary metric stored in the score column
-          metadata: { rounds: allResults }  // per-round breakdown stored in metadata
+          score: avgMs,
+          metadata: { rounds: allResults }
         })
       })
       setSaved(true)

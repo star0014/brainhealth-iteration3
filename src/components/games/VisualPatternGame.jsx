@@ -132,10 +132,14 @@ function VisualPatternGame({ onBack }) {
   async function saveScore(finalLevel) {
     try {
       const token = await getToken()
-      if (!token) return
+      const guestId = !token ? localStorage.getItem('bb_guest_id') : null
+      if (!token && !guestId) return
+      const headers = token
+        ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+        : { 'X-Guest-ID': guestId, 'Content-Type': 'application/json' }
       await fetch(`${API}/games`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ game_id: 'visual_pattern', display_name: getDisplayName(user?.id, user?.firstName), score: finalLevel, metadata: { max_level: finalLevel } })
       })
       setSaved(true)

@@ -134,11 +134,15 @@ function MentalMathGame({ onBack }) {
   async function saveScore() {
     try {
       const token = await getToken()
-      if (!token) return
+      const guestId = !token ? localStorage.getItem('bb_guest_id') : null
+      if (!token && !guestId) return
+      const headers = token
+        ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+        : { 'X-Guest-ID': guestId, 'Content-Type': 'application/json' }
       const accuracy = total > 0 ? Math.round((score / total) * 100) : 0
       await fetch(`${API}/games`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ game_id: 'mental_math', display_name: getDisplayName(user?.id, user?.firstName), score, metadata: { total, accuracy, best_streak: bestStreak } })
       })
       setSaved(true)
