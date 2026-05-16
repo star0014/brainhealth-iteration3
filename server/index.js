@@ -3,7 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import habitRoutes from './routes/habits.js'
 import gameRoutes from './routes/games.js'
-import tokenRoutes from './routes/tokens.js'
+/import tokenRoutes from './routes/tokens.js'/
 
 const app = express()
 
@@ -26,7 +26,7 @@ app.use(express.json())
 
 app.use('/api/habits', habitRoutes)
 app.use('/api/games', gameRoutes)
-app.use('/api/tokens', tokenRoutes)
+/app.use('/api/tokens', tokenRoutes)/
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }))
 
