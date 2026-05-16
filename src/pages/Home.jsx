@@ -78,6 +78,10 @@ function Home() {
       {/* ── Hero section ───────────────────────────────────────────────────── */}
       <section className="home-hero">
         <div className="hero-left">
+          <div className="hero-eyebrow">
+            <span className="eyebrow-dot" />
+            Free to use &nbsp;·&nbsp; No app needed &nbsp;·&nbsp; 5 minutes
+          </div>
           <h1 className="hero-title">
             Your brain on<br />
             <span className="hero-title-accent">autopilot?</span>
@@ -85,10 +89,23 @@ function Home() {
           <p className="hero-sub">
             Find out how sleep, movement, screen time, and social habits are quietly shaping your focus in under 5 minutes.
           </p>
-          {/* "Try as guest" is only shown to signed-out users — signed-in users go directly */}
-          <SignedOut>
-            <button className="btn-ghost-link" onClick={handleGuestLogin}>Try as guest</button>
-          </SignedOut>
+          <div className="hero-actions">
+            <SignedOut>
+              <SignUpButton mode="modal">
+                <button className="btn-main">Get my snapshot →</button>
+              </SignUpButton>
+              <button className="btn-ghost-link" onClick={handleGuestLogin}>Try as guest</button>
+            </SignedOut>
+            <SignedIn>
+              <button className="btn-main" onClick={handleGoToApp}>Go to Dashboard →</button>
+            </SignedIn>
+          </div>
+          <div className="hero-floating-badges">
+            <span className="hero-badge">🧠 Brain snapshot</span>
+            <span className="hero-badge">🎮 5 mini games</span>
+            <span className="hero-badge">📈 Progress tracking</span>
+            <span className="hero-badge">🏆 Leaderboard</span>
+          </div>
         </div>
         <div className="hero-right">
           <img
@@ -143,6 +160,92 @@ function Home() {
             <div key={domain.label} className="how-domain-card" style={{ '--dc': domain.color, '--dbg': domain.bg }}>
               <div className="how-domain-card-label">{domain.label}</div>
               <div className="how-domain-card-desc">{domain.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
+      {/* ── Features section ────────────────────────────────────────────────── */}
+      <section className="features-section">
+        <div className="features-label">Everything you need</div>
+        <h2 className="features-title">A complete brain health toolkit</h2>
+        <p className="features-sub">Six interconnected tools that work together to help you understand and improve your mental performance.</p>
+
+        <div className="features-grid">
+          {[
+            {
+              icon: '🧠',
+              color: '#2563eb',
+              bg: '#eff6ff',
+              title: 'Brain Snapshot',
+              desc: 'A personalised score across 4 domains — Sleep, Movement, Screen Time, and Social Energy — generated from 5 honest questions.',
+              tag: 'Onboarding',
+            },
+            {
+              icon: '📊',
+              color: '#7c3aed',
+              bg: '#f5f3ff',
+              title: 'Smart Dashboard',
+              desc: 'Your pet Brainy reacts to your habits in real time. See domain vitals, priority focus areas, and personalised brain boosts.',
+              tag: 'Dashboard',
+            },
+            {
+              icon: '📋',
+              color: '#0891b2',
+              bg: '#e0f9ff',
+              title: 'Daily Habit Tracker',
+              desc: 'Log your sleep, screen time, and activity each day. Charts show patterns over time so you can spot what's actually helping.',
+              tag: 'Habit Tracker',
+            },
+            {
+              icon: '🎮',
+              color: '#16a34a',
+              bg: '#f0fdf4',
+              title: 'Cognitive Mini Games',
+              desc: 'Five science-backed games — Reaction Test, Memory Match, Stroop Test, Visual Pattern, and Mental Math — with a global leaderboard.',
+              tag: 'Mini Games',
+            },
+            {
+              icon: '📚',
+              color: '#b45309',
+              bg: '#fef3c7',
+              title: 'Personalised Article Hub',
+              desc: 'Reads recommended from your weakest domains. Sleep dragging? You'll see sleep articles first. Focus broken? Screen tips appear.',
+              tag: 'Article Hub',
+            },
+            {
+              icon: '🏆',
+              color: '#dc2626',
+              bg: '#fef2f2',
+              title: 'Progress & Achievements',
+              desc: 'Track streaks, unlock 30 game achievements, and watch your scores improve over time with detailed performance charts.',
+              tag: 'Progress',
+            },
+          ].map((f) => (
+            <div key={f.title} className="feature-card" style={{ '--fc': f.color, '--fb': f.bg }}>
+              <div className="feature-card-icon">{f.icon}</div>
+              <div className="feature-card-tag">{f.tag}</div>
+              <div className="feature-card-title">{f.title}</div>
+              <div className="feature-card-desc">{f.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Social proof strip ───────────────────────────────────────────────── */}
+      <section className="proof-section">
+        <div className="proof-label">Built for students, by students</div>
+        <div className="proof-cards">
+          {[
+            { emoji: '😴', quote: 'I didn't realise how much my sleep was affecting my focus until I saw my score.', name: 'University student' },
+            { emoji: '📱', quote: 'The screen time domain was a wake-up call. My cognitive strain score was 20/100.', name: 'Undergraduate' },
+            { emoji: '🏃', quote: 'After tracking for two weeks my energy score went from 40 to 80. The charts don't lie.', name: 'Postgraduate student' },
+          ].map((p, i) => (
+            <div key={i} className="proof-card">
+              <div className="proof-emoji">{p.emoji}</div>
+              <p className="proof-quote">"{p.quote}"</p>
+              <div className="proof-name">— {p.name}</div>
             </div>
           ))}
         </div>
