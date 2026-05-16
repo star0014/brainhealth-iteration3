@@ -238,9 +238,9 @@ function Home() {
         <div className="proof-label">Built for students, by students</div>
         <div className="proof-cards">
           {[
-            { emoji: '😴', quote: 'I didn't realise how much my sleep was affecting my focus until I saw my score.', name: 'University student' },
-            { emoji: '📱', quote: 'The screen time domain was a wake-up call. My cognitive strain score was 20/100.', name: 'Undergraduate' },
-            { emoji: '🏃', quote: 'After tracking for two weeks my energy score went from 40 to 80. The charts don't lie.', name: 'Postgraduate student' },
+            { emoji: "😴", quote: "I did not realise how much my sleep was affecting my focus until I saw my score.", name: "University student" },
+            { emoji: "📱", quote: "The screen time domain was a wake-up call. My cognitive strain score was 20/100.", name: "Undergraduate" },
+            { emoji: "🏃", quote: "After tracking for two weeks my energy score went from 40 to 80. The charts do not lie.", name: "Postgraduate student" },
           ].map((p, i) => (
             <div key={i} className="proof-card">
               <div className="proof-emoji">{p.emoji}</div>
