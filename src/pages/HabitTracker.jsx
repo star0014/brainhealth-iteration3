@@ -107,6 +107,42 @@ function HabitTracker() {
     setShowGuide(false)
   }
 
+  async function fetchToken() {
+    if (guest) return
+    setTokenLoading(true)
+    try {
+      const token = await getToken()
+      const res = await fetch(`${API}/tokens`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      const data = await res.json()
+      if (data.token) setWearableToken(data.token)
+    } catch (err) { console.error(err) }
+    finally { setTokenLoading(false) }
+  }
+
+  async function regenerateToken() {
+    if (guest) return
+    setTokenLoading(true)
+    try {
+      const token = await getToken()
+      const res = await fetch(`${API}/tokens/regenerate`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      const data = await res.json()
+      if (data.token) { setWearableToken(data.token); setTokenCopied(false) }
+    } catch (err) { console.error(err) }
+    finally { setTokenLoading(false) }
+  }
+
+  function copyToken() {
+    if (!wearableToken) return
+    navigator.clipboard.writeText(wearableToken)
+    setTokenCopied(true)
+    setTimeout(() => setTokenCopied(false), 2500)
+  }
+
   // today: ISO date string 'YYYY-MM-DD' in the local timezone, used to match DB/localStorage records.
   const today = new Date().toLocaleDateString('en-CA')
 
