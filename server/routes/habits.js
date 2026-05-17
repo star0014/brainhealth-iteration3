@@ -16,26 +16,6 @@ import { requireAuth } from '../middleware/auth.js'
 
 const router = express.Router()
 
-// Inline wearable token middleware — verifies X-Wearable-Token header or body.token
-async function requireWearableToken(req, res, next) {
-  try {
-    const token = req.headers['x-wearable-token'] || req.body?.token
-    if (!token) return res.status(401).json({ error: 'Missing wearable token' })
-    const result = await pool.query(
-      'SELECT user_id FROM user_tokens WHERE token = $1',
-      [token]
-    )
-    if (result.rows.length === 0) {
-      return res.status(401).json({ error: 'Invalid token' })
-    }
-    req.userId = result.rows[0].user_id
-    next()
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Server error' })
-  }
-}
-
 // ── GET /api/habits ──────────────────────────────────────────────────────────
 // Returns all habit check-ins for the authenticated user, sorted newest-first.
 // Used by:
@@ -101,93 +81,6 @@ router.put('/:date', requireAuth, async (req, res) => {
       return res.status(404).json({ error: 'No check-in found' })
     }
     res.json(result.rows[0])
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Server error' })
-  }
-})
-
-
-// ── POST /api/habits/wearable ─────────────────────────────────────────────────
-// Receives data from an Apple Watch via the iOS Shortcuts app.
-// Auth: X-Wearable-Token header (personal token from /api/tokens).
-//
-// Body (from Shortcut):
-//   sleep_minutes   NUMBER  — minutes of sleep last night (from Apple Health)
-//   steps           NUMBER  — step count today (from Apple Health)
-//   date            STRING  — YYYY-MM-DD (today's date, sent by Shortcut)
-//
-// Mapping logic:
-//   sleep_minutes → sleep_hours bucket:
-//     < 360 min (6h)  → "< 6"
-//     360–419         → "6"
-//     420–479 (7h)    → "7"
-//     480–539 (8h)    → "8"
-//     540+ (9h+)      → "9+"
-//
-//   steps → physical_activity:
-//     >= 7500 steps   → true  (WHO recommended daily activity)
-//     < 7500 steps    → false
-//
-//   screen_time: Apple Watch cannot measure screen time — defaults to "2-4h"
-//                so the record saves successfully without breaking the schema.
-//                Users can manually update this in the Habit Tracker if needed.
-//
-// Returns 201 on create, 200 on update (if already checked in today).
-router.post('/wearable', requireWearableToken, async (req, res) => {
-  try {
-    const { sleep_minutes, steps, date } = req.body
-
-    if (!date) {
-      return res.status(400).json({ error: 'date is required (YYYY-MM-DD)' })
-    }
-
-    // Map sleep minutes to bucket
-    const mins = Number(sleep_minutes) || 0
-    let sleep_hours
-    if (mins < 360)       sleep_hours = '< 6'
-    else if (mins < 420)  sleep_hours = '6'
-    else if (mins < 480)  sleep_hours = '7'
-    else if (mins < 540)  sleep_hours = '8'
-    else                  sleep_hours = '9+'
-
-    // Map steps to activity boolean
-    const physical_activity = Number(steps) >= 7500
-
-    // Default screen_time — can be updated manually
-    const screen_time = '2-4h'
-
-    // Check if already checked in today
-    const existing = await pool.query(
-      'SELECT id FROM habits WHERE user_id = $1 AND date = $2',
-      [req.userId, date]
-    )
-
-    if (existing.rows.length > 0) {
-      // Update existing entry
-      const result = await pool.query(
-        `UPDATE habits SET sleep_hours=$1, physical_activity=$2
-         WHERE user_id=$3 AND date=$4 RETURNING *`,
-        [sleep_hours, physical_activity, req.userId, date]
-      )
-      return res.json({
-        status: 'updated',
-        habit: result.rows[0],
-        mapped: { sleep_hours, physical_activity, screen_time, sleep_minutes: mins, steps }
-      })
-    }
-
-    // Create new entry
-    const result = await pool.query(
-      `INSERT INTO habits (user_id, sleep_hours, screen_time, physical_activity, date)
-       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [req.userId, sleep_hours, screen_time, physical_activity, date]
-    )
-    res.status(201).json({
-      status: 'created',
-      habit: result.rows[0],
-      mapped: { sleep_hours, physical_activity, screen_time, sleep_minutes: mins, steps }
-    })
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Server error' })
