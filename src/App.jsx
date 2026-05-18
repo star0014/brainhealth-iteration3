@@ -23,6 +23,7 @@ import HabitTracker from './pages/HabitTracker'
 import Progress from './pages/Progress'
 import MiniGames from './pages/MiniGames'
 import ProjectLogin from './pages/ProjectLogin'
+import SmartReminders from './pages/SmartReminders'
 import Footer from './components/Footer'
 import { hasProjectAccess } from './utils/projectAuth'
 import { getSnapshot, hasCompletedOnboarding } from './utils/recommendations'
@@ -214,6 +215,9 @@ export default function App() {
 
         {/* /articles : article hub — requires completed onboarding for personalised picks */}
         <Route path="/articles"  element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><RequireCompletedOnboarding><ArticleHub /></RequireCompletedOnboarding></RequireAuth><Footer /></RequireProjectAccess>} />
+
+        {/* /reminders : smart reminders — contextual nudges based on habit patterns */}
+        <Route path="/reminders" element={<RequireProjectAccess><RequireAuth><Navbar /><GuestBanner /><SmartReminders /><Footer /></RequireAuth></RequireProjectAccess>} />
       </Routes>
     </BrowserRouter>
   )

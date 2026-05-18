@@ -15,9 +15,16 @@
 //   - POST is used for a new entry; PUT /:date is used to update an existing one.
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import './HabitTracker.css'
+import {
+  loadReminderPrefs,
+  getSleepBand,
+  isStudyCrunchActive,
+  REMINDER_MESSAGES,
+} from './SmartReminders'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -84,6 +91,7 @@ const sleepToNum = s => {
 
 function HabitTracker() {
   const { getToken } = useAuth()
+  const navigate = useNavigate()
   const guest = isGuest()
 
   const [habits,       setHabits]       = useState([])     // all habit records for this user
@@ -92,8 +100,12 @@ function HabitTracker() {
   const [saving,       setSaving]       = useState(false)  // form submit in progress
   const [view,         setView]         = useState('checkin')  // 'checkin' | 'history'
   const [historyRange, setHistoryRange] = useState(7)      // 7 or 30 day history window
-  const [successMsg,   setSuccessMsg]   = useState('')     // transient success feedback text
-  const [showGuide,    setShowGuide]    = useState(() => localStorage.getItem('bb_ht_guide_dismissed') !== 'true')
+  const [successMsg,     setSuccessMsg]     = useState('')     // transient success feedback text
+  const [showGuide,      setShowGuide]      = useState(() => localStorage.getItem('bb_ht_guide_dismissed') !== 'true')
+  const [reminderToast,  setReminderToast]  = useState(null)  // sleep-based reminder toast after save
+  const [showReminderGuide, setShowReminderGuide] = useState(
+    () => localStorage.getItem('bb_reminder_guide_dismissed') !== 'true'
+  )
   const [inputMode,    setInputMode]    = useState('manual')  // 'manual' | 'watch'
   const [wearableToken, setWearableToken] = useState(null)
   const [tokenLoading, setTokenLoading] = useState(false)
@@ -180,6 +192,37 @@ function HabitTracker() {
     finally { setLoading(false) }
   }
 
+  // ── Reminder toast ────────────────────────────────────────────────────────
+  // Shows a colour-coded contextual toast in the top-right corner for 6 seconds
+  // after a successful check-in save, based on sleep hours and reminder preferences.
+  function triggerReminderToast(sleepHours) {
+    const prefs = loadReminderPrefs()
+    if (!prefs.enabled) return
+
+    const msgs = REMINDER_MESSAGES[prefs.tone] || REMINDER_MESSAGES.Chill
+    let msg, color, icon
+
+    if (isStudyCrunchActive(prefs)) {
+      msg = msgs.studyCrunch; color = '#7c3aed'; icon = '📚'
+    } else {
+      const band = getSleepBand(sleepHours)
+      if (band === 'red') {
+        const label = sleepHours === '< 6' ? 'under 6' : sleepHours
+        msg = msgs.red.replace('{sleep}', label); color = '#ef4444'; icon = '😴'
+      } else if (band === 'yellow') {
+        msg = msgs.yellow.replace('{sleep}', sleepHours); color = '#f59e0b'; icon = '🌙'
+      } else if (band === 'green') {
+        msg = msgs.green.replace('{sleep}', sleepHours); color = '#16a34a'; icon = '🧠'
+      } else if (band === 'blue') {
+        msg = msgs.blue.replace('{sleep}', '10'); color = '#0ea5e9'; icon = '💙'
+      }
+    }
+
+    if (!msg) return
+    setReminderToast({ msg, color, icon })
+    setTimeout(() => setReminderToast(null), 6000)
+  }
+
   // ── Save ──────────────────────────────────────────────────────────────────
   // Submits the form. Uses POST for a new entry and PUT for updating an existing one.
   // Sleep and screen time fields are required; physical_activity defaults to false.
@@ -195,6 +238,7 @@ function HabitTracker() {
         setTodayCheckin(saved)
         setSuccessMsg(todayCheckin ? 'Check-in updated!' : 'Check-in saved!')
         setTimeout(() => setSuccessMsg(''), 3000)  // clear the message after 3 s
+        triggerReminderToast(form.sleep_hours)
       } else {
         // Authenticated: decide between POST (new) and PUT (update) based on todayCheckin.
         const token  = await getToken()
@@ -209,6 +253,7 @@ function HabitTracker() {
           setSuccessMsg(todayCheckin ? 'Check-in updated!' : 'Check-in saved!')
           setTimeout(() => setSuccessMsg(''), 3000)
           loadHabits()  // refresh the habit list so the history view stays up to date
+          triggerReminderToast(form.sleep_hours)
         }
       }
     } catch (err) { console.error(err) }
@@ -259,6 +304,18 @@ function HabitTracker() {
 
   return (
     <div className="ht-page">
+
+      {/* ── Smart Reminder toast (fixed top-right, 6 s auto-dismiss) ── */}
+      {reminderToast && (
+        <div
+          className="ht-reminder-toast"
+          style={{ borderColor: reminderToast.color, background: reminderToast.color + '14' }}
+        >
+          <span className="ht-reminder-toast-icon">{reminderToast.icon}</span>
+          <p className="ht-reminder-toast-msg">{reminderToast.msg}</p>
+          <button className="ht-reminder-toast-close" onClick={() => setReminderToast(null)} aria-label="Dismiss">×</button>
+        </div>
+      )}
 
       {/* Guest nudge banner — only shown to guest users */}
       {guest && (
@@ -325,6 +382,37 @@ function HabitTracker() {
                 </div>
               </div>
               <div className="ht-guide-footer">Check in daily to keep Brainy's score up to date.</div>
+            </div>
+          )}
+
+          {/* Smart Reminders promo banner */}
+          {showReminderGuide && (
+            <div className="ht-reminder-guide">
+              <button
+                className="ht-guide-close"
+                onClick={() => {
+                  localStorage.setItem('bb_reminder_guide_dismissed', 'true')
+                  setShowReminderGuide(false)
+                }}
+                aria-label="Dismiss"
+              >×</button>
+              <div className="ht-rg-body">
+                <span className="ht-rg-icon">🔔</span>
+                <div className="ht-rg-text">
+                  <div className="ht-rg-title">Smart Reminders — get personalised nudges after each check-in</div>
+                  <div className="ht-rg-desc">
+                    BrainBoost analyses your sleep, screen time, and study schedule to send you a friendly contextual reminder every time you save a check-in. Activate <strong>Study Crunch Mode</strong> during exam periods for focused, exam-week tips.
+                  </div>
+                  <div className="ht-rg-features">
+                    <span>😌 Choose your tone — Chill, Direct, or Hype</span>
+                    <span>📚 Study Crunch Mode for exam periods</span>
+                    <span>🌙 Set your preferred reminder window</span>
+                  </div>
+                </div>
+              </div>
+              <button className="ht-rg-cta" onClick={() => navigate('/reminders')}>
+                Set up Smart Reminders →
+              </button>
             </div>
           )}
 
