@@ -183,7 +183,7 @@ export default function App() {
         <Route path="/onboarding" element={<OnboardingRoute />} />
 
         {/* /dashboard : main results screen — requires completed onboarding */}
-        <Route path="/dashboard" element={<RequireAuth><Navbar /><GuestBanner /><RequireCompletedOnboarding><Dashboard /></RequireCompletedOnboarding></RequireAuth>} />
+        <Route path="/dashboard" element={<><RequireAuth><Navbar /><GuestBanner /><RequireCompletedOnboarding><Dashboard /></RequireCompletedOnboarding></RequireAuth></>} />
 
         {/* /habits : daily check-in and habit history */}
         <Route path="/habits"    element={<RequireAuth><Navbar /><GuestBanner /><HabitTracker /></RequireAuth>} />
@@ -192,7 +192,7 @@ export default function App() {
         <Route path="/progress"  element={<RequireAuth><Navbar /><GuestBanner /><Progress /></RequireAuth>} />
 
         {/* /games : mini games hub — open to all (no RequireAuth) */}
-        <Route path="/games"     element={<Navbar /><GuestBanner /><MiniGames />} />
+        <Route path="/games"     element={<><Navbar /><GuestBanner /><MiniGames /></>} />
 
         {/* /articles : article hub — requires completed onboarding for personalised picks */}
         <Route path="/articles"  element={<RequireAuth><Navbar /><GuestBanner /><RequireCompletedOnboarding><ArticleHub /></RequireCompletedOnboarding></RequireAuth>} />
