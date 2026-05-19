@@ -1,4 +1,3 @@
-/* v-cognicompass-1 */
 // ─────────────────────────────────────────────────────────────────────────────
 // Footer — shared data & privacy disclaimer shown on all app pages.
 // Extracted from Home.jsx so it renders consistently across the entire app
