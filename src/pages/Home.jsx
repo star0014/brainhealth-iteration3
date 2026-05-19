@@ -360,7 +360,7 @@ export default function Home() {
           <div className="cta-blob cta-blob-2" />
           <p className="final-cta-kicker">Ready?</p>
           <h2 className="final-cta-title">Understand what is<br />draining your brain.</h2>
-          <p className="final-cta-sub">Join students already using BrainBoost to track habits, play games, and improve focus.</p>
+          <p className="final-cta-sub">Join students already using CogniCompass to track habits, play games, and improve focus.</p>
           <SignedOut>
             <div className="cta-actions">
               <SignUpButton mode="modal">
@@ -379,17 +379,17 @@ export default function Home() {
       <footer className="home-footer">
         <div className="home-logo">Brain<span>Boost</span></div>
         <p className="home-trust-note">
-          BrainBoost only uses your responses to personalise insights, habit tracking, progress, and recommendations. We do not sell user data or use it for advertising.
+          CogniCompass only uses your responses to personalise insights, habit tracking, progress, and recommendations. We do not sell user data or use it for advertising.
         </p>
         <details className="home-privacy-card">
           <summary>
             <span className="privacy-summary-main">Data &amp; Privacy Disclaimer</span>
-            <span className="privacy-summary-sub">How BrainBoost uses data responsibly</span>
+            <span className="privacy-summary-sub">How CogniCompass uses data responsibly</span>
           </summary>
           <div className="home-privacy-content">
             <div className="privacy-intro">
               <div className="privacy-intro-badge">Research-informed questions</div>
-              <p>BrainBoost is a student wellbeing and brain-health habit app developed for educational purposes. It helps users reflect on lifestyle habits such as sleep, screen time, physical activity, and social wellbeing.</p>
+              <p>CogniCompass is a student wellbeing and brain-health habit app developed for educational purposes. It helps users reflect on lifestyle habits such as sleep, screen time, physical activity, and social wellbeing.</p>
             </div>
             <div className="privacy-principles" aria-label="Privacy principles">
               <span>Transparency</span><span>Purpose limitation</span><span>Data minimisation</span><span>Privacy by design</span>
@@ -401,11 +401,11 @@ export default function Home() {
               <section className="privacy-info-card"><h3>Recommendation transparency</h3><p>Article recommendations are based on your onboarding snapshot and lower-scoring habit domains. They are educational only and should not be interpreted as medical advice, clinical assessment, or diagnosis.</p></section>
             </div>
             <div className="privacy-commitments">
-              <div><strong>We collect only what the app needs.</strong><span>Where possible, BrainBoost uses general habit ranges rather than highly detailed health records.</span></div>
+              <div><strong>We collect only what the app needs.</strong><span>Where possible, CogniCompass uses general habit ranges rather than highly detailed health records.</span></div>
               <div><strong>We do not sell your data.</strong><span>Your data is not used for advertising or unrelated purposes.</span></div>
               <div><strong>You stay in control.</strong><span>You may choose not to provide certain information, use guest mode where available, or stop using the app at any time.</span></div>
             </div>
-            <div className="privacy-support-note">BrainBoost is not a medical, psychological, or diagnostic tool and does not replace advice from a qualified health professional.</div>
+            <div className="privacy-support-note">CogniCompass is not a medical, psychological, or diagnostic tool and does not replace advice from a qualified health professional.</div>
           </div>
         </details>
       </footer>

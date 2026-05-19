@@ -895,10 +895,10 @@ function Dashboard() {
               {/* Expanded state: show all four domain scores as a mini breakdown */}
               {expandedCard === 'strongest' && (
                 <div className="standout-expanded">
-                  <div className="standout-indicator"><span>Your score</span><span style={{color:'#16a34a',fontWeight:700}}>{strongest.score}/100</span></div>
-                  <div className="standout-indicator"><span>Domain</span><span>{strongest.label}</span></div>
-                  <div className="standout-indicator"><span>Status</span><span style={{color:'#16a34a'}}>🔒 Locked in</span></div>
-                  <div className="standout-indicator" style={{borderTop:'1px solid #e2e8f0',paddingTop:6,marginTop:2}}><span style={{fontSize:11,color:'#64748b'}}>Your strongest area — keep it up</span></div>
+                  <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='cognitive_strain')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Activity</span><span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
                 </div>
               )}
             </div>
@@ -914,10 +914,10 @@ function Dashboard() {
               </div>
               {expandedCard === 'focus' && (
                 <div className="standout-expanded">
-                  <div className="standout-indicator"><span>Your score</span><span style={{color:'#dc2626',fontWeight:700}}>{priority.score}/100</span></div>
-                  <div className="standout-indicator"><span>Domain</span><span>{priority.label}</span></div>
-                  <div className="standout-indicator"><span>Gap to avg</span><span style={{color:'#dc2626'}}>↓ {Math.max(0, 60 - priority.score)} pts below target</span></div>
-                  <div className="standout-indicator" style={{borderTop:'1px solid #e2e8f0',paddingTop:6,marginTop:2}}><span style={{fontSize:11,color:'#64748b'}}>Main area to work on right now</span></div>
+                  <div className="standout-indicator"><span>Sleep</span><span>{snapshot.domainScores?.find(d=>d.key==='sleep_rhythm')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Screen</span><span>{snapshot.domainScores?.find(d=>d.key==='cognitive_strain')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Activity</span><span>{snapshot.domainScores?.find(d=>d.key==='move_mode')?.score ?? '—'}/100</span></div>
+                  <div className="standout-indicator"><span>Social</span><span>{snapshot.domainScores?.find(d=>d.key==='social_energy')?.score ?? '—'}/100</span></div>
                 </div>
               )}
             </div>
@@ -966,7 +966,7 @@ function Dashboard() {
 
       </div>
 
-      {/* Games nudge — between Biggest Shifts and Brain Boosts */}
+      {/* Games nudge — between Biggest Shifts and CogniCompasss */}
       <Link to="/games" className="dash-games-nudge">
         <div className="dash-games-nudge-left">
           <span className="dash-games-nudge-emoji">🎮</span>

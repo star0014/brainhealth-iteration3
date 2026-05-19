@@ -267,7 +267,7 @@ function Onboarding() {
           <div>
             {step === 0 && (
               <div className="ob-data-notice">
-                Before you start: BrainBoost uses your answers to create a personalised brain-health snapshot and recommend relevant articles. The questionnaire items are informed by published journal research on sleep, screen time, physical activity, and wellbeing habits. BrainBoost is not a medical or diagnostic tool, and your responses are only used to support app features such as insights, habit tracking, progress, and recommendations.
+                Before you start: CogniCompass uses your answers to create a personalised brain-health snapshot and recommend relevant articles. The questionnaire items are informed by published journal research on sleep, screen time, physical activity, and wellbeing habits. CogniCompass is not a medical or diagnostic tool, and your responses are only used to support app features such as insights, habit tracking, progress, and recommendations.
               </div>
             )}
 
@@ -415,7 +415,7 @@ function Onboarding() {
 
             {/* Legal/medical disclaimer — required for any health-adjacent assessment app */}
             <div className="disclaimer">
-              BrainBoost provides lifestyle awareness only. It is not a medical, psychological, or diagnostic assessment.
+              CogniCompass provides lifestyle awareness only. It is not a medical, psychological, or diagnostic assessment.
             </div>
 
             <div className="ob-footer">

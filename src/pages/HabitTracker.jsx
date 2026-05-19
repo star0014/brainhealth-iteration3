@@ -15,16 +15,9 @@
 //   - POST is used for a new entry; PUT /:date is used to update an existing one.
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import './HabitTracker.css'
-import {
-  loadReminderPrefs,
-  getSleepBand,
-  isStudyCrunchActive,
-  REMINDER_MESSAGES,
-} from './SmartReminders'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -91,7 +84,6 @@ const sleepToNum = s => {
 
 function HabitTracker() {
   const { getToken } = useAuth()
-  const navigate = useNavigate()
   const guest = isGuest()
 
   const [habits,       setHabits]       = useState([])     // all habit records for this user
@@ -100,59 +92,14 @@ function HabitTracker() {
   const [saving,       setSaving]       = useState(false)  // form submit in progress
   const [view,         setView]         = useState('checkin')  // 'checkin' | 'history'
   const [historyRange, setHistoryRange] = useState(7)      // 7 or 30 day history window
-  const [successMsg,     setSuccessMsg]     = useState('')     // transient success feedback text
-  const [showGuide,      setShowGuide]      = useState(() => localStorage.getItem('bb_ht_guide_dismissed') !== 'true')
-  const [reminderToast,  setReminderToast]  = useState(null)  // sleep-based reminder toast after save
-  const [showReminderGuide, setShowReminderGuide] = useState(
-    () => localStorage.getItem('bb_reminder_guide_dismissed') !== 'true'
-  )
-  const [inputMode,    setInputMode]    = useState('manual')  // 'manual' | 'watch'
-  const [wearableToken, setWearableToken] = useState(null)
-  const [tokenLoading, setTokenLoading] = useState(false)
-  const [tokenCopied,  setTokenCopied]  = useState(false)
-  const [lastWatchSync, setLastWatchSync] = useState(null)
+  const [successMsg,   setSuccessMsg]   = useState('')     // transient success feedback text
+  const [showGuide,    setShowGuide]    = useState(() => localStorage.getItem('bb_ht_guide_dismissed') !== 'true')
   // Form values: initialised empty, pre-populated if a today entry exists.
   const [form, setForm] = useState({ sleep_hours: '', screen_time: '', physical_activity: false })
 
   const dismissGuide = () => {
     localStorage.setItem('bb_ht_guide_dismissed', 'true')
     setShowGuide(false)
-  }
-
-  async function fetchToken() {
-    if (guest) return
-    setTokenLoading(true)
-    try {
-      const token = await getToken()
-      const res = await fetch(`${API}/habits/token`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      const data = await res.json()
-      if (data.token) setWearableToken(data.token)
-    } catch (err) { console.error(err) }
-    finally { setTokenLoading(false) }
-  }
-
-  async function regenerateToken() {
-    if (guest) return
-    setTokenLoading(true)
-    try {
-      const token = await getToken()
-      const res = await fetch(`${API}/habits/token/regenerate`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      const data = await res.json()
-      if (data.token) { setWearableToken(data.token); setTokenCopied(false) }
-    } catch (err) { console.error(err) }
-    finally { setTokenLoading(false) }
-  }
-
-  function copyToken() {
-    if (!wearableToken) return
-    navigator.clipboard.writeText(wearableToken)
-    setTokenCopied(true)
-    setTimeout(() => setTokenCopied(false), 2500)
   }
 
   // today: ISO date string 'YYYY-MM-DD' in the local timezone, used to match DB/localStorage records.
@@ -192,37 +139,6 @@ function HabitTracker() {
     finally { setLoading(false) }
   }
 
-  // ── Reminder toast ────────────────────────────────────────────────────────
-  // Shows a colour-coded contextual toast in the top-right corner for 6 seconds
-  // after a successful check-in save, based on sleep hours and reminder preferences.
-  function triggerReminderToast(sleepHours) {
-    const prefs = loadReminderPrefs()
-    if (!prefs.enabled) return
-
-    const msgs = REMINDER_MESSAGES[prefs.tone] || REMINDER_MESSAGES.Chill
-    let msg, color, icon
-
-    if (isStudyCrunchActive(prefs)) {
-      msg = msgs.studyCrunch; color = '#7c3aed'; icon = '📚'
-    } else {
-      const band = getSleepBand(sleepHours)
-      if (band === 'red') {
-        const label = sleepHours === '< 6' ? 'under 6' : sleepHours
-        msg = msgs.red.replace('{sleep}', label); color = '#ef4444'; icon = '😴'
-      } else if (band === 'yellow') {
-        msg = msgs.yellow.replace('{sleep}', sleepHours); color = '#f59e0b'; icon = '🌙'
-      } else if (band === 'green') {
-        msg = msgs.green.replace('{sleep}', sleepHours); color = '#16a34a'; icon = '🧠'
-      } else if (band === 'blue') {
-        msg = msgs.blue.replace('{sleep}', '10'); color = '#0ea5e9'; icon = '💙'
-      }
-    }
-
-    if (!msg) return
-    setReminderToast({ msg, color, icon })
-    setTimeout(() => setReminderToast(null), 6000)
-  }
-
   // ── Save ──────────────────────────────────────────────────────────────────
   // Submits the form. Uses POST for a new entry and PUT for updating an existing one.
   // Sleep and screen time fields are required; physical_activity defaults to false.
@@ -238,7 +154,6 @@ function HabitTracker() {
         setTodayCheckin(saved)
         setSuccessMsg(todayCheckin ? 'Check-in updated!' : 'Check-in saved!')
         setTimeout(() => setSuccessMsg(''), 3000)  // clear the message after 3 s
-        triggerReminderToast(form.sleep_hours)
       } else {
         // Authenticated: decide between POST (new) and PUT (update) based on todayCheckin.
         const token  = await getToken()
@@ -253,7 +168,6 @@ function HabitTracker() {
           setSuccessMsg(todayCheckin ? 'Check-in updated!' : 'Check-in saved!')
           setTimeout(() => setSuccessMsg(''), 3000)
           loadHabits()  // refresh the habit list so the history view stays up to date
-          triggerReminderToast(form.sleep_hours)
         }
       }
     } catch (err) { console.error(err) }
@@ -305,18 +219,6 @@ function HabitTracker() {
   return (
     <div className="ht-page">
 
-      {/* ── Smart Reminder toast (fixed top-right, 6 s auto-dismiss) ── */}
-      {reminderToast && (
-        <div
-          className="ht-reminder-toast"
-          style={{ borderColor: reminderToast.color, background: reminderToast.color + '14' }}
-        >
-          <span className="ht-reminder-toast-icon">{reminderToast.icon}</span>
-          <p className="ht-reminder-toast-msg">{reminderToast.msg}</p>
-          <button className="ht-reminder-toast-close" onClick={() => setReminderToast(null)} aria-label="Dismiss">×</button>
-        </div>
-      )}
-
       {/* Guest nudge banner — only shown to guest users */}
       {guest && (
         <div className="ht-guest-banner">
@@ -346,7 +248,6 @@ function HabitTracker() {
       <div className="ht-tabs">
         <button className={`ht-tab ${view === 'checkin'  ? 'active' : ''}`} onClick={() => setView('checkin')}>Today's Check-in</button>
         <button className={`ht-tab ${view === 'history'  ? 'active' : ''}`} onClick={() => setView('history')}>History & Charts</button>
-        {!guest && <button className={`ht-tab ${view === 'watch' ? 'active' : ''}`} onClick={() => { setView('watch'); if (!wearableToken) fetchToken() }}>⌚ Apple Watch</button>}
       </div>
 
       {/* ── Check-in tab ──────────────────────────────────────────────────────── */}
@@ -385,44 +286,13 @@ function HabitTracker() {
             </div>
           )}
 
-          {/* Smart Reminders promo banner */}
-          {showReminderGuide && (
-            <div className="ht-reminder-guide">
-              <button
-                className="ht-guide-close"
-                onClick={() => {
-                  localStorage.setItem('bb_reminder_guide_dismissed', 'true')
-                  setShowReminderGuide(false)
-                }}
-                aria-label="Dismiss"
-              >×</button>
-              <div className="ht-rg-body">
-                <span className="ht-rg-icon">🔔</span>
-                <div className="ht-rg-text">
-                  <div className="ht-rg-title">Smart Reminders — get personalised nudges after each check-in</div>
-                  <div className="ht-rg-desc">
-                    BrainBoost analyses your sleep, screen time, and study schedule to send you a friendly contextual reminder every time you save a check-in. Activate <strong>Study Crunch Mode</strong> during exam periods for focused, exam-week tips.
-                  </div>
-                  <div className="ht-rg-features">
-                    <span>😌 Choose your tone — Chill, Direct, or Hype</span>
-                    <span>📚 Study Crunch Mode for exam periods</span>
-                    <span>🌙 Set your preferred reminder window</span>
-                  </div>
-                </div>
-              </div>
-              <button className="ht-rg-cta" onClick={() => navigate('/reminders')}>
-                Set up Smart Reminders →
-              </button>
-            </div>
-          )}
-
           {/* Reminder notice if the user already has an entry for today */}
           {todayCheckin && (
             <div className="ht-already-done">You've already checked in today — update your entry below if needed.</div>
           )}
           <div className="ht-card">
             <div className="ht-data-note">
-              Your daily check-ins help BrainBoost identify patterns in sleep, screen time, movement, and progress. This information is used only to personalise your dashboard, insights, and streak history.
+              Your daily check-ins help CogniCompass identify patterns in sleep, screen time, movement, and progress. This information is used only to personalise your dashboard, insights, and streak history.
             </div>
 
             {/* Sleep hours field — 5 option buttons (< 6 to 10+) */}
@@ -576,139 +446,6 @@ function HabitTracker() {
           )}
         </div>
       )}
-
-      {/* ── Apple Watch tab ───────────────────────────────────────────────────── */}
-      {view === 'watch' && (
-        <div className="ht-watch">
-
-          {/* Intro banner */}
-          <div className="ht-watch-hero">
-            <div className="ht-watch-hero-left">
-              <div className="ht-watch-badge">⌚ Apple Watch Integration</div>
-              <h2 className="ht-watch-title">Auto-sync your health data</h2>
-              <p className="ht-watch-desc">Use an iPhone Shortcut to automatically send your sleep and activity data from Apple Health to BrainBoost each morning — no manual entry needed.</p>
-            </div>
-            <div className="ht-watch-hero-right">
-              <div className="ht-watch-stats">
-                <div className="ht-watch-stat"><div className="ht-watch-stat-icon">😴</div><div className="ht-watch-stat-label">Sleep tracked automatically</div></div>
-                <div className="ht-watch-stat"><div className="ht-watch-stat-icon">🏃</div><div className="ht-watch-stat-label">Steps → Activity score</div></div>
-                <div className="ht-watch-stat"><div className="ht-watch-stat-icon">🔄</div><div className="ht-watch-stat-label">Runs every morning</div></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Step 1: Your token */}
-          <div className="ht-watch-step">
-            <div className="ht-watch-step-num">1</div>
-            <div className="ht-watch-step-content">
-              <div className="ht-watch-step-title">Copy your personal token</div>
-              <p className="ht-watch-step-desc">This token identifies you when the Shortcut sends data. Keep it private — anyone with this token can write to your account.</p>
-              <div className="ht-watch-token-box">
-                {tokenLoading ? (
-                  <div className="ht-watch-token-loading">Generating token...</div>
-                ) : wearableToken ? (
-                  <>
-                    <code className="ht-watch-token-value">{wearableToken}</code>
-                    <div className="ht-watch-token-actions">
-                      <button className="ht-watch-copy-btn" onClick={copyToken}>
-                        {tokenCopied ? '✓ Copied!' : 'Copy token'}
-                      </button>
-                      <button className="ht-watch-regen-btn" onClick={regenerateToken}>↻ Regenerate</button>
-                    </div>
-                  </>
-                ) : (
-                  <button className="ht-watch-copy-btn" onClick={fetchToken}>Generate token</button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Step 2: Install shortcut */}
-          <div className="ht-watch-step">
-            <div className="ht-watch-step-num">2</div>
-            <div className="ht-watch-step-content">
-              <div className="ht-watch-step-title">Set up the iPhone Shortcut</div>
-              <p className="ht-watch-step-desc">On your iPhone, open the Shortcuts app and create a new Shortcut with these actions in order:</p>
-              <div className="ht-watch-shortcut-steps">
-                {[
-                  { icon: '🏥', action: 'Get Health Samples', detail: 'Category: Sleep Analysis · Type: In Bed · Start: Yesterday · End: Now' },
-                  { icon: '🧮', action: 'Calculate', detail: 'Duration of sleep samples in minutes → store as "SleepMinutes"' },
-                  { icon: '👟', action: 'Get Health Samples', detail: 'Category: Fitness · Type: Steps · Start: Today 12:00 AM · End: Now' },
-                  { icon: '🧮', action: 'Calculate', detail: 'Sum of step samples → store as "StepCount"' },
-                  { icon: '📅', action: 'Format Date', detail: 'Current Date · ISO 8601 date only (YYYY-MM-DD) → store as "TodayDate"' },
-                  { icon: '🌐', action: 'Get Contents of URL', detail: `URL: ${typeof window !== 'undefined' ? 'https://brainhealth-iteration2-production.up.railway.app/api' : '[API_URL]'}/habits/wearable · Method: POST · Body: JSON with sleep_minutes, steps, date, token` },
-                ].map((s, i) => (
-                  <div key={i} className="ht-shortcut-step">
-                    <span className="ht-shortcut-step-icon">{s.icon}</span>
-                    <div>
-                      <div className="ht-shortcut-step-action">{s.action}</div>
-                      <div className="ht-shortcut-step-detail">{s.detail}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Step 3: JSON body */}
-          <div className="ht-watch-step">
-            <div className="ht-watch-step-num">3</div>
-            <div className="ht-watch-step-content">
-              <div className="ht-watch-step-title">Configure the request body</div>
-              <p className="ht-watch-step-desc">In the "Get Contents of URL" action, set the body type to JSON and add these fields:</p>
-              <div className="ht-watch-json">
-                <pre>{`{
-  "token":         "[paste your token from Step 1]",
-  "sleep_minutes": [SleepMinutes variable],
-  "steps":         [StepCount variable],
-  "date":          "[TodayDate variable]"
-}`}</pre>
-              </div>
-            </div>
-          </div>
-
-          {/* Step 4: Automate */}
-          <div className="ht-watch-step">
-            <div className="ht-watch-step-num">4</div>
-            <div className="ht-watch-step-content">
-              <div className="ht-watch-step-title">Automate it to run every morning</div>
-              <p className="ht-watch-step-desc">In the Shortcuts app, go to <strong>Automation</strong> → tap + → <strong>Time of Day</strong> → set to 8:00 AM daily → select your BrainBoost shortcut. It will now run automatically each morning and sync your overnight data.</p>
-              <div className="ht-watch-tip">
-                <span>💡</span>
-                <span>Screen time cannot be read by Apple Watch — you will still need to log that manually in the Today Check-in tab. Sleep and activity will be filled automatically.</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Data mapping info */}
-          <div className="ht-watch-mapping">
-            <div className="ht-watch-mapping-title">How your data is mapped</div>
-            <div className="ht-watch-mapping-grid">
-              <div className="ht-watch-mapping-card">
-                <div className="ht-watch-mapping-icon">😴</div>
-                <div className="ht-watch-mapping-label">Sleep minutes → Hours bucket</div>
-                <div className="ht-watch-mapping-rows">
-                  {[['< 360 min', '→', '"Less than 6h"'],['360–419 min','→','"6 hours"'],['420–479 min','→','"7 hours"'],['480–539 min','→','"8 hours"'],['540+ min','→','"9 hours or more"']].map(([a,b,c],i) => (
-                    <div key={i} className="ht-watch-mapping-row"><span>{a}</span><span style={{color:'#2563eb'}}>{b}</span><span>{c}</span></div>
-                  ))}
-                </div>
-              </div>
-              <div className="ht-watch-mapping-card">
-                <div className="ht-watch-mapping-icon">🏃</div>
-                <div className="ht-watch-mapping-label">Step count → Activity</div>
-                <div className="ht-watch-mapping-rows">
-                  {[['7,500+ steps','→','Active ✓'],['< 7,500 steps','→','Not active ✗']].map(([a,b,c],i) => (
-                    <div key={i} className="ht-watch-mapping-row"><span>{a}</span><span style={{color:'#2563eb'}}>{b}</span><span>{c}</span></div>
-                  ))}
-                </div>
-                <div className="ht-watch-mapping-note">Based on WHO recommended daily activity threshold</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      )}
-
     </div>
   )
 }

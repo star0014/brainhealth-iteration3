@@ -11,18 +11,18 @@ function Footer() {
       <div className="app-footer-inner">
         <div className="app-footer-logo">Brain<span>Boost</span></div>
         <p className="app-footer-trust">
-          BrainBoost only uses your responses to personalise insights, habit tracking, progress, and recommendations. We do not sell user data or use it for advertising.
+          CogniCompass only uses your responses to personalise insights, habit tracking, progress, and recommendations. We do not sell user data or use it for advertising.
         </p>
         <details className="home-privacy-card">
           <summary>
             <span className="privacy-summary-main">Data &amp; Privacy Disclaimer</span>
-            <span className="privacy-summary-sub">How BrainBoost uses data responsibly</span>
+            <span className="privacy-summary-sub">How CogniCompass uses data responsibly</span>
           </summary>
           <div className="home-privacy-content">
             <div className="privacy-intro">
               <div className="privacy-intro-badge">Research-informed questions</div>
               <p>
-                BrainBoost is a student wellbeing and brain-health habit app developed for educational purposes. It helps users reflect on lifestyle habits such as sleep, screen time, physical activity, and social wellbeing. Each questionnaire area is informed by published journal research and translated into simple habit-range questions for reflection.
+                CogniCompass is a student wellbeing and brain-health habit app developed for educational purposes. It helps users reflect on lifestyle habits such as sleep, screen time, physical activity, and social wellbeing. Each questionnaire area is informed by published journal research and translated into simple habit-range questions for reflection.
               </p>
             </div>
             <div className="privacy-principles" aria-label="Privacy principles">
@@ -52,7 +52,7 @@ function Footer() {
             <div className="privacy-commitments">
               <div>
                 <strong>We collect only what the app needs.</strong>
-                <span>Where possible, BrainBoost uses general habit ranges rather than highly detailed health records.</span>
+                <span>Where possible, CogniCompass uses general habit ranges rather than highly detailed health records.</span>
               </div>
               <div>
                 <strong>We do not sell your data.</strong>
@@ -64,7 +64,7 @@ function Footer() {
               </div>
             </div>
             <div className="privacy-support-note">
-              BrainBoost is not a medical, psychological, or diagnostic tool and does not replace advice from a qualified health professional. If you are experiencing serious stress, sleep problems, mental health concerns, or medical symptoms, seek support from a qualified health professional or trusted support service.
+              CogniCompass is not a medical, psychological, or diagnostic tool and does not replace advice from a qualified health professional. If you are experiencing serious stress, sleep problems, mental health concerns, or medical symptoms, seek support from a qualified health professional or trusted support service.
             </div>
           </div>
         </details>
