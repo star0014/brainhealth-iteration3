@@ -17,6 +17,7 @@ import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, Cell, ResponsiveContainer } from 'recharts'
 import './Progress.css'
 import MilestoneBanner from '../components/MilestoneBanner'
+import { GAME_ACHIEVEMENTS } from '../data/gameAchievements'
 
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 
@@ -65,6 +66,7 @@ const MILESTONES = [
 // Each achievement has an id, emoji, Gen Z label, desc, rarity tier, and a
 // condition function that receives the full gameScores array and returns boolean.
 // Rarity: 'common' | 'rare' | 'legendary'
+// GAME_ACHIEVEMENTS imported from shared file
 
 // ── Rating helpers ──────────────────────────────────────────────────────────
 // Returns a label and colour for a reaction-time score (in milliseconds).
@@ -119,6 +121,17 @@ function Progress() {
 
       // Persist the new total so next visit can detect further unlocks.
       localStorage.setItem('bb_total_checkins', computedTotal)
+
+      // Fetch guest game scores using X-Guest-ID header
+      const guestId = localStorage.getItem('bb_guest_id')
+      if (guestId) {
+        try {
+          const gamesRes = await fetch(`${API}/games`, { headers: { 'X-Guest-ID': guestId } })
+          const gamesData = await gamesRes.json()
+          if (Array.isArray(gamesData)) setGameScores(gamesData)
+        } catch { /* silently fail */ }
+      }
+
       setLoading(false)
       return
     }
@@ -159,6 +172,7 @@ function Progress() {
   const unlockedMilestones    = MILESTONES.filter(m => total >= m.days)
   const nextMilestone         = MILESTONES.find(m => total < m.days)
   const progressToNext        = nextMilestone ? (total / nextMilestone.days) * 100 : 100  // 100% if all milestones are unlocked
+  const unlockedAchievements  = GAME_ACHIEVEMENTS.filter(a => a.condition(gameScores))
 
   const reactionData    = gameScores.filter(g => g.game_id === 'reaction').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, ms: g.score }))
   const memoryData      = gameScores.filter(g => g.game_id === 'memory').slice(0, 8).reverse().map((g, i) => ({ n: `#${i + 1}`, moves: g.score }))
@@ -313,6 +327,31 @@ function Progress() {
                 </div>
                 {/* "Unlocked" badge — only shown when the milestone is achieved */}
                 {unlocked && <div className="milestone-badge" style={{ background: m.color }}>Unlocked</div>}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── Game achievements ────────────────────────────────────────────────── */}
+      <div className="achievements-section">
+        <div className="achievements-header">
+          <h2>game achievements</h2>
+          <span className="achievements-count">{unlockedAchievements.length}/{GAME_ACHIEVEMENTS.length} unlocked</span>
+        </div>
+        <div className="achievements-grid">
+          {GAME_ACHIEVEMENTS.map(a => {
+            const unlocked = a.condition(gameScores)
+            return (
+              <div key={a.id} className={`achievement-card rarity-${a.rarity} ${unlocked ? 'unlocked' : 'locked'}`}>
+                <div className="achievement-emoji">{unlocked ? a.emoji : '🔒'}</div>
+                <div className="achievement-body">
+                  <div className="achievement-label">{a.label}</div>
+                  <div className="achievement-desc">{unlocked ? a.desc : a.hint}</div>
+                </div>
+                <div className={`achievement-rarity-badge rarity-${a.rarity}`}>
+                  {a.rarity}
+                </div>
               </div>
             )
           })}
