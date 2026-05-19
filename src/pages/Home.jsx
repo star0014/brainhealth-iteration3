@@ -1,3 +1,4 @@
+/* v-cognicompass-1 */
 import { useState, useEffect, useRef } from 'react'
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
 import { useNavigate } from 'react-router-dom'

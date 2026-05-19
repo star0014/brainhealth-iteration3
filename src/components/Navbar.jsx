@@ -1,3 +1,4 @@
+/* v-cognicompass-1 */
 // ─────────────────────────────────────────────────────────────────────────────
 // Navbar component — shown on every authenticated page above the main content.
 //
