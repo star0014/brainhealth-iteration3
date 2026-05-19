@@ -1,4 +1,4 @@
-.game-page { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; font-family: 'Inter', sans-serif; }
+.game-page { max-width: 760px; margin: 0 auto; padding: 96px 24px 80px; font-family: 'Inter', sans-serif; }
 
 .game-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
 .game-back { background: none; border: 1.5px solid #e2e8f0; padding: 8px 16px; border-radius: 50px; font-size: 14px; font-weight: 500; color: #475569; cursor: pointer; transition: all 0.2s; }
@@ -312,7 +312,7 @@
 }
 .stroop-start-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(245,158,11,0.4); }
 
-/* ── Stroop & Mental Math game layout (missing styles) ───────────────────── */
+/* ── Stroop game layout ── */
 .stroop-game { display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%; }
 .stroop-timer-track { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
 .stroop-timer-fill { height: 100%; border-radius: 99px; transition: width 1s linear, background 0.3s; }
@@ -320,7 +320,7 @@
 .stroop-stat-box { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px 24px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
 .stroop-stat-num { font-size: 32px; font-weight: 800; color: #0d1b2a; letter-spacing: -1px; line-height: 1; }
 .stroop-stat-lbl { font-size: 13px; color: #64748b; font-weight: 500; margin-top: 4px; }
-.stroop-word-card { width: 100%; background: white; border: 2px solid #e2e8f0; border-radius: 20px; padding: 32px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: border-color 0.2s, background 0.2s; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+.stroop-word-card { width: 100%; background: white; border: 2px solid #e2e8f0; border-radius: 20px; padding: 32px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; transition: border-color 0.2s, background 0.2s; }
 .stroop-word-card.correct { background: #f0fdf4; border-color: #16a34a; }
 .stroop-word-card.wrong { background: #fef2f2; border-color: #ef4444; }
 .stroop-word-prompt { font-size: 14px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
