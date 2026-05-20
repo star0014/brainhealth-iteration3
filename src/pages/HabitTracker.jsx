@@ -601,43 +601,6 @@ function HabitTracker() {
             </div>
           </div>
 
-          <div className="ht-watch-step">
-            <div className="ht-watch-step-num">4</div>
-            <div className="ht-watch-step-content">
-              <div className="ht-watch-step-title">Quick sync — test or update anytime</div>
-              <p className="ht-watch-step-desc">Enter current data and sync immediately without waiting for the Shortcut.</p>
-              {!wearableToken ? (
-                <div style={{ color: '#64748b', fontSize: 14 }}>Generate your token in Step 1 first.</div>
-              ) : (
-                <>
-                  <div className="ht-quick-sync-row">
-                    <div className="ht-quick-field">
-                      <label className="ht-quick-label">😴 Sleep last night (hours)</label>
-                      <input type="number" min="0" max="16" step="0.5" className="ht-quick-input" placeholder="e.g. 7.5" value={quickSleep} onChange={e => setQuickSleep(e.target.value)} />
-                    </div>
-                    <div className="ht-quick-field">
-                      <label className="ht-quick-label">🏃 Steps today</label>
-                      <input type="number" min="0" max="50000" className="ht-quick-input" placeholder="e.g. 8500" value={quickSteps} onChange={e => setQuickSteps(e.target.value)} />
-                    </div>
-                    <button className="ht-quick-sync-btn" onClick={quickSync} disabled={quickSyncing || (!quickSleep && !quickSteps)}>
-                      {quickSyncing ? 'Syncing...' : 'Sync now →'}
-                    </button>
-                  </div>
-                  {quickResult && (
-                    <div className={`ht-quick-result ${quickResult.ok ? 'ok' : 'err'}`}>
-                      {quickResult.ok ? '✓' : '✗'} {quickResult.msg}
-                      {lastWatchSync && quickResult.ok && <span style={{ color: '#94a3b8', marginLeft: 8 }}>at {lastWatchSync}</span>}
-                    </div>
-                  )}
-                  <div className="ht-watch-tip">
-                    <span>💡</span>
-                    <span>Each sync overwrites today's entry. Running at 8 AM gives the final full-day data.</span>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-
           <div className="ht-watch-mapping">
             <div className="ht-watch-mapping-title">How your data is mapped</div>
             <div className="ht-watch-mapping-grid">
