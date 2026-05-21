@@ -178,11 +178,13 @@ function MiniGames() {
     load()
   }, [user])
 
-  if (activeGame === 'reaction')       return <ReactionGame onBack={() => setActiveGame(null)} />
-  if (activeGame === 'memory')         return <MemoryGame onBack={() => setActiveGame(null)} />
-  if (activeGame === 'stroop')         return <StroopGame onBack={() => setActiveGame(null)} />
-  if (activeGame === 'visual_pattern') return <VisualPatternGame onBack={() => setActiveGame(null)} />
-  if (activeGame === 'mental_math')    return <MentalMathGame onBack={() => setActiveGame(null)} />
+  const goBack = () => { setActiveGame(null); window.scrollTo(0, 0) }
+
+  if (activeGame === 'reaction')       return <ReactionGame onBack={goBack} />
+  if (activeGame === 'memory')         return <MemoryGame onBack={goBack} />
+  if (activeGame === 'stroop')         return <StroopGame onBack={goBack} />
+  if (activeGame === 'visual_pattern') return <VisualPatternGame onBack={goBack} />
+  if (activeGame === 'mental_math')    return <MentalMathGame onBack={goBack} />
 
   return (
     <div className="mg-page">
@@ -240,7 +242,7 @@ function MiniGames() {
                 </div>
                 <div className="mg-skill" style={{ color: g.color }}>{g.skill}</div>
                 <p>{g.desc}</p>
-                <button className="mg-play-btn" style={{ background: g.color }} onClick={() => setActiveGame(g.id)}>
+                <button className="mg-play-btn" style={{ background: g.color }} onClick={() => { setActiveGame(g.id); window.scrollTo(0, 0) }}>
                   Play Now
                 </button>
               </div>

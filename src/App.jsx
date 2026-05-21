@@ -160,6 +160,13 @@ function OnboardingRoute() {
   return <><Navbar /><GuestBanner /><Onboarding /></>
 }
 
+// Scrolls to (0,0) on every route change so pages always open at the top.
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // App
 // ─────────────────────────────────────────────────────────────────────────────
@@ -175,6 +182,8 @@ function OnboardingRoute() {
 export default function App() {
   return (
     <BrowserRouter>
+      {/* ScrollToTop: resets scroll position to (0,0) on every route change */}
+      <ScrollToTop />
       {/* HandleAuthTransition: invisible component that handles guest→user migration */}
       <HandleAuthTransition />
       <Routes>

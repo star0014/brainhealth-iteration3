@@ -49,6 +49,9 @@ const OtherGames = ({ onBack }) => (
 function VisualPatternGame({ onBack }) {
   const { getToken } = useAuth()
   const { user } = useUser()
+
+  // Phase controls the round flow:
+  // intro -> showing sequence -> accepting input -> feedback -> next round or final result.
   const [phase, setPhase] = useState('intro')   // intro | showing | input | correct | wrong | done
   const [sequence, setSequence] = useState([])  // the full sequence so far
   const [playerSeq, setPlayerSeq] = useState([]) // what the player has tapped
@@ -60,11 +63,14 @@ function VisualPatternGame({ onBack }) {
   const [strictMode, setStrictMode] = useState(false)
   const timeouts = useRef([])
 
+  // Clear every scheduled sequence flash before starting over or leaving the component.
   function clearAllTimeouts() {
     timeouts.current.forEach(clearTimeout)
     timeouts.current = []
   }
 
+  // Plays the current sequence back to the player one cell at a time.
+  // Timeouts are tracked so reset/unmount can cancel pending flashes.
   const showSequence = useCallback((seq) => {
     setPhase('showing')
     setPlayerSeq([])
@@ -81,6 +87,8 @@ function VisualPatternGame({ onBack }) {
     timeouts.current.push(t3)
   }, [])
 
+  // Starts a new game with a single random cell.
+  // Each successful round appends one more random cell to this same sequence.
   function startGame() {
     clearAllTimeouts()
     const firstCell = Math.floor(Math.random() * GRID_SIZE)
@@ -92,6 +100,8 @@ function VisualPatternGame({ onBack }) {
     showSequence(newSeq)
   }
 
+  // Validates each tap immediately against the sequence position.
+  // The game ends on the first mismatch; otherwise completing the sequence advances a level.
   function handleCellTap(cellIndex) {
     if (phase !== 'input') return
 
@@ -129,6 +139,8 @@ function VisualPatternGame({ onBack }) {
     }
   }
 
+  // Score is the highest fully completed level.
+  // Authenticated users send a Clerk token; guest users send their guest id header.
   async function saveScore(finalLevel) {
     try {
       const token = await getToken()

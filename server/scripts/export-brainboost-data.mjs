@@ -4,6 +4,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import pg from 'pg'
 
+// Exports the production/local database rows used for iteration evidence.
+// Output files are written to the repo root so notebooks and reports can load them directly.
 const { Pool } = pg
 
 const __filename = fileURLToPath(import.meta.url)
@@ -20,6 +22,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 })
 
+// Write pretty JSON with a trailing newline to keep diffs readable.
 async function writeJson(filename, rows) {
   const outputPath = path.join(repoRoot, filename)
   await fs.writeFile(outputPath, `${JSON.stringify(rows, null, 2)}\n`, 'utf8')
@@ -27,6 +30,7 @@ async function writeJson(filename, rows) {
 }
 
 try {
+  // Export both tables in parallel; neither query depends on the other.
   const [habitsResult, gamesResult] = await Promise.all([
     pool.query(`
       SELECT id, user_id, sleep_hours, screen_time, physical_activity, date, created_at

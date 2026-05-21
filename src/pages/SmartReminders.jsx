@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useAuth, SignUpButton } from '@clerk/clerk-react'
 import './SmartReminders.css'
 
+// Smart Reminders turns recent habit check-ins into a single contextual nudge.
+// Preferences are saved locally so guest users can use the feature without an account;
+// authenticated users still load habit history from the API.
 const API = import.meta.env.VITE_API_URL || 'https://brainhealth-iteration2-production.up.railway.app/api'
 const LS_HABITS_KEY = 'bb_guest_habits'
 export const LS_PREFS_KEY = 'bb_reminder_prefs'
@@ -33,6 +36,8 @@ export const sleepToNum = s => {
   return parseFloat(s)
 }
 
+// Groups sleep into reminder severity bands.
+// Red/yellow are short sleep, green is the target range, and blue flags oversleeping.
 export function getSleepBand(sleepHours) {
   const n = sleepToNum(sleepHours)
   if (n === null) return null
@@ -44,12 +49,16 @@ export function getSleepBand(sleepHours) {
 
 const HIGH_SCREEN = ['6-8h', '8h+']
 
+// Detects a recurring high-screen pattern across the most recent week.
+// A single heavy day is not enough to trigger a screen warning; 3+ days suggests a pattern.
 export function analyzeScreenPattern(habits) {
   const recent = habits.slice(0, 7)
   const highDays = recent.filter(h => HIGH_SCREEN.includes(h.screen_time)).length
   return highDays >= 3
 }
 
+// Study Crunch takes priority over normal habit reminders while its date window is active.
+// Dates use local YYYY-MM-DD strings, which compare correctly for same-format calendar dates.
 export function isStudyCrunchActive(prefs) {
   if (!prefs.studyCrunchMode || !prefs.studyCrunchStart || !prefs.studyCrunchEnd) return false
   const today = new Date().toLocaleDateString('en-CA')
@@ -89,6 +98,8 @@ export const REMINDER_MESSAGES = {
   },
 }
 
+// Chooses the preview/toast message shown to the user.
+// Priority order matters: disabled > study crunch > no data > sleep severity > screen pattern.
 function generateReminderPreview(habits, prefs) {
   if (!prefs.enabled) {
     return { type: 'disabled', msg: "Reminders are currently turned off.", color: '#94a3b8', icon: '🔕' }
@@ -257,7 +268,7 @@ function SmartReminders() {
             {/* Window */}
             <div className="sr-field" style={{ marginBottom: 0 }}>
               <label>Reminder Window</label>
-              <p className="sr-field-desc">When would you prefer to be reminded?</p>
+              <p className="sr-field-desc">When do you usually do your habit check-in?</p>
               <div className="sr-window-grid">
                 {[
                   { key: 'Morning',   icon: '🌅', label: 'Morning',   time: '6–9 AM'  },
@@ -275,6 +286,7 @@ function SmartReminders() {
                   </button>
                 ))}
               </div>
+              <p className="sr-window-note">💡 Reminders appear automatically after each Habit Tracker check-in — this setting helps us tailor the message to your routine.</p>
             </div>
           </div>
 

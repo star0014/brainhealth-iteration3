@@ -3,8 +3,11 @@ import pool from '../db.js'
 import { requireAuth } from '../middleware/auth.js'
 import crypto from 'crypto'
 
+// Wearable integrations use a stable per-user token instead of Clerk auth.
+// The token can be pasted into a device/script so it can submit habit data later.
 const router = express.Router()
 
+// Create the token table lazily so local demos work even if migrations have not run.
 async function ensureTable() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS user_tokens (
@@ -18,6 +21,8 @@ async function ensureTable() {
 
 setTimeout(() => ensureTable().catch(console.error), 2000)
 
+// Returns the existing token for this user, or creates one on first use.
+// This keeps the token stable across page refreshes until the user regenerates it.
 router.get('/', requireAuth, async (req, res) => {
   try {
     const existing = await pool.query(
@@ -39,6 +44,8 @@ router.get('/', requireAuth, async (req, res) => {
   }
 })
 
+// Replaces the user's wearable token.
+// Old device scripts stop working after this, which is useful if a token is exposed.
 router.post('/regenerate', requireAuth, async (req, res) => {
   try {
     const token = crypto.randomUUID()
